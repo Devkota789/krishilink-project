@@ -1,0 +1,24 @@
+.footer {
+  width: 100%;
+ background: linear-gradient(135deg, rgba(200, 230, 201, 0.95), rgba(165, 214, 167, 0.9));
+   /* Changed from linear gradient to solid color */
+  color: #0b610b;
+  text-align: center;
+   padding: 0.6rem 0 0.5rem 0;
+  
+  font-size: 1.05rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  position: static; /* Remove fixed positioning */
+  left: 0;
+  bottom: 0;
+  z-index: 10;
+  box-shadow: 0 -2px 8px rgba(56, 142, 60, 0.08);
+}
+
+@media (max-width: 600px) {
+  .footer {
+    font-size: 0.95rem;
+    padding: 0.4rem 0 0.4rem 0;
+  }
+}

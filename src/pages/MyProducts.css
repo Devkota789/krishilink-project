@@ -1,0 +1,369 @@
+.my-products-page {
+  min-height: 100vh;
+  background-color: #f5f7fa;
+  padding-top: 80px; /* Space for fixed navbar */
+}
+
+.my-products-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.header-section h1 {
+  color: #2c3e50;
+  margin: 0;
+}
+
+.add-product-button {
+  background-color: #2E7D32;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.add-product-button:hover {
+  background-color: #1B5E20;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.product-card {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.product-image {
+  height: 200px;
+  overflow: hidden;
+  background-color: #f5f5f5;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.loading-spinner {
+  width: 30px;
+  height: 30px;
+  margin: 0 auto 8px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #2E7D32;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.3s ease;
+}
+
+.product-image img[src^="data:image/svg+xml"] {
+  padding: 20px;
+  object-fit: contain;
+  background-color: #f5f5f5;
+}
+
+.product-info {
+  padding: 1.5rem;
+}
+
+.product-info h3 {
+  margin: 0 0 0.5rem 0;
+  color: #2c3e50;
+}
+
+.product-description {
+  color: #7f8c8d;
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  max-height: 2.8em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+
+  -webkit-box-orient: vertical;
+}
+
+.product-details {
+  display: flex;
+  justify-content: space-between;
+  margin: 1rem 0;
+  font-weight: 600;
+}
+
+.price {
+  color: #2E7D32;
+}
+
+.quantity {
+  color: #34495e;
+}
+
+.product-location {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+  margin: 0.5rem 0;
+}
+
+.product-category {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+.loading-message,
+.error-message,
+.no-products-message {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.1rem;
+}
+
+.loading-message {
+  color: #2c3e50;
+}
+
+.error-message {
+  color: #e74c3c;
+}
+
+.no-products-message {
+  color: #7f8c8d;
+}
+
+.unauthorized {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 1.5rem;
+  color: #7f8c8d;
+  padding-top: 80px;
+}
+
+.product-modal,
+.edit-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.product-modal .modal-content,
+.edit-modal .modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.modal-content h2 {
+  color: #2E7D32;
+  margin-bottom: 1rem;
+}
+
+.modal-details {
+  margin: 1.5rem 0;
+}
+
+.modal-details p {
+  margin: 0.5rem 0;
+  color: #2c3e50;
+}
+
+.modal-content button {
+  background-color: #2E7D32;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-top: 1rem;
+}
+
+.modal-content button:hover {
+  background-color: #1B5E20;
+}
+
+@media (max-width: 768px) {
+  .my-products-container {
+    padding: 1rem;
+  }
+
+  .header-section {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+}
+
+.product-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  justify-content: flex-start;
+}
+
+.product-actions button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  min-width: 70px;
+}
+
+.product-actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.product-actions .view-btn {
+  background-color: #2196F3;
+  color: white;
+}
+
+.product-actions .view-btn:hover:not(:disabled) {
+  background-color: #1976D2;
+}
+
+.product-actions .edit-btn {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.product-actions .edit-btn:hover:not(:disabled) {
+  background-color: #45a049;
+}
+
+.product-actions .delete-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.product-actions .delete-btn:hover:not(:disabled) {
+  background-color: #d32f2f;
+}
+
+.edit-modal h2 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  color: #666;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.form-group textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.form-actions button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.form-actions button[type="submit"] {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.form-actions button[type="submit"]:hover {
+  background-color: #45a049;
+}
+
+.form-actions button[type="button"] {
+  background-color: #f44336;
+  color: white;
+}
+
+.form-actions button[type="button"]:hover {
+  background-color: #da190b;
+} 

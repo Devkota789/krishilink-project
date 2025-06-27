@@ -1,0 +1,110 @@
+.navbar {
+  background: linear-gradient(135deg, rgba(200, 230, 201, 0.95), rgba(165, 214, 167, 0.9));
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 0.3rem 1.2rem; /* Reduced padding for a slimmer navbar */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+.navbar-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  background: white;
+  border-radius: 50%; /* Make logo background circular */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.navbar-logo img {
+  height: 42px; /* Slightly smaller logo */
+  width: 42px;
+  object-fit: cover;
+  border-radius: 50%; /* Make logo image circular */
+}
+
+
+.navbar-links {
+  display: flex;
+  gap: 2.5rem;
+  align-items: center;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: #2E7D32;
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: relative;
+  padding: 0.5rem 0;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: #2E7D32;
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+.nav-link:hover {
+  color: #1B5E20;
+}
+
+.navbar-auth {
+  display: flex;
+  gap: 1.2rem;
+  align-items: center;
+}
+
+.auth-link {
+  text-decoration: none;
+  padding: 0.7rem 1.8rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  letter-spacing: 0.5px;
+}
+
+.login {
+  color: #2E7D32;
+  border: 2px solid #2E7D32;
+  background-color: transparent;
+}
+
+.login:hover {
+  background-color: #2E7D32;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(46, 125, 50, 0.2);
+}
+
+.register {
+  background-color: #2E7D32;
+  color: white;
+  border: 2px solid #2E7D32;
+}
+
+.register:hover {
+  background-color: #1B5E20;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(46, 125, 50, 0.2);
+} 
