@@ -19,18 +19,24 @@ api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('authToken');
     
-    // // Check if token has changed (new login session)
-    // if (token !== currentSessionToken) {
-    //   currentSessionToken = token;
-    //   console.log('Token changed in interceptor:', token ? token.substring(0, 20) + '...' : 'null');
-    // }
+    // Debug logging to help identify auth issues
+    console.log('Request interceptor - URL:', config.url);
+    console.log('Request interceptor - Token exists:', !!token);
+    if (token) {
+      console.log('Request interceptor - Token preview:', token.substring(0, 20) + '...');
+    }
     
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+      console.log('Request interceptor - Authorization header set');
+    } else {
+      console.log('Request interceptor - No token found, request will be sent without auth');
     }
+    
     return config;
   },
   (error) => {
+    console.error('Request interceptor error:', error);
     return Promise.reject(error);
   }
 );
@@ -87,7 +93,7 @@ export const productAPI = {
   getAllProducts: () => api.get('/api/Product/getProducts'),
   getProductById: (productId) => api.get(`/api/Product/getProduct/${productId}`),
   getRelatedProducts: (productId) => api.get(`/api/Product/getRelatedProducts/${productId}`),
-  getProductImage: (productImageCode) => api.get(`/api/Product/getProductImage/${productImageCode}`),
+  getProductImage: (productImageCode) => api.get(`/api/Product/getProductImage/${productImageCode}`, { responseType: 'blob' }),
   addProduct: (productData, config = {}) => api.post('/api/Product/addProduct', productData, config),
 
   getMyProducts: () => api.get('/api/Product/getMyProducts'),
@@ -98,13 +104,29 @@ export const productAPI = {
 
 // Order API endpoints
 export const orderAPI = {
-  addOrder: (orderData) => api.post('/api/Order/addOrder', orderData),
-  addOrders: (ordersData) => api.post('/api/Order/addOrders', ordersData),
-  cancelOrder: (orderId) => api.put(`/api/Order/cancelOrder/${orderId}`),
-  confirmOrder: (orderId) => api.put(`/api/Order/confirmOrder/${orderId}`),
-  shipOrder: (orderId) => api.put(`/api/Order/shipOrder/${orderId}`),
-  deliverOrder: (orderId) => api.put(`/api/Order/deliverOrder/${orderId}`),
+  addOrder: (orderData) => {
+    // For multipart/form-data, let the browser set the Content-Type header with boundary
+    const config = {
+      headers: {
+        // Remove the default Accept header for this request
+        'Accept': undefined,
+      },
+    };
+    return api.post('/api/Order/addOrder', orderData, config);
+  },
+  addOrders: (ordersData) => {
+    // For bulk orders using application/json
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+    return api.post('/api/Order/addOrders', ordersData, config);
+  },
   getMyOrders: () => api.get('/api/Order/getMyOrders'),
+  getOrderById: (orderId) => api.get(`/api/Order/getOrder/${orderId}`),
+  updateOrderStatus: (orderId, statusData) => api.put(`/api/Order/updateOrderStatus/${orderId}`, statusData),
+  deleteOrder: (orderId) => api.delete(`/api/Order/deleteOrder/${orderId}`),
 };
 
 // Review API endpoints
@@ -131,6 +153,36 @@ export const clearAuthData = () => {
   sessionStorage.removeItem('krishilink_session_id');
   currentSessionToken = null;
   console.log('All authentication data cleared via utility function');
+};
+
+// Utility function to check authentication status
+export const checkAuthStatus = () => {
+  const user = localStorage.getItem('user');
+  const token = localStorage.getItem('authToken');
+  const refreshToken = localStorage.getItem('refreshToken');
+  const sessionId = sessionStorage.getItem('krishilink_session_id');
+  
+  console.log('=== Authentication Status Check ===');
+  console.log('User exists:', !!user);
+  console.log('Token exists:', !!token);
+  console.log('Refresh token exists:', !!refreshToken);
+  console.log('Session ID exists:', !!sessionId);
+  
+  if (user) {
+    try {
+      const userData = JSON.parse(user);
+      console.log('User role:', userData.role);
+      console.log('User email/phone:', userData.emailOrPhone || userData.email);
+    } catch (e) {
+      console.log('Failed to parse user data');
+    }
+  }
+  
+  if (token) {
+    console.log('Token preview:', token.substring(0, 20) + '...');
+  }
+  
+  return { user: !!user, token: !!token, refreshToken: !!refreshToken, sessionId: !!sessionId };
 };
 
 export default api; 

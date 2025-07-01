@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaSeedling, FaMapMarkerAlt, FaUser, FaPhone, FaBoxOpen, FaShoppingCart } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
+import noImage from '../assets/Images/no-image.png';
 
 const Products = () => {
   const [products, setProducts] = useState([]);
@@ -47,7 +48,7 @@ const Products = () => {
   };
 
   const handleImageError = (e) => {
-    e.target.src = 'https://via.placeholder.com/400x300?text=No+Image+Available';
+    e.target.src = noImage;
   };
 
   const handleSeeDetails = (productId) => {
@@ -161,7 +162,7 @@ const Products = () => {
               >
                 <div className="product-image">
                   <img 
-                    src={product.imageUrl || 'https://via.placeholder.com/400x300?text=No+Image+Available'} 
+                    src={product.imageUrl || noImage} 
                     alt={product.productName}
                     onError={handleImageError}
                   />
