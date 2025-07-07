@@ -29,16 +29,26 @@ const Products = () => {
       setError(null);
       const response = await productAPI.getAllProducts();
 
-      if (response.data) {
-        // Map the products to include the image URL
-        const productsWithImages = response.data.map(product => ({
-          ...product,
-          imageUrl: product.imageCode ? `${BASE_URL}/api/Product/getProductImage/${product.imageCode}` : null
-        }));
-        setProducts(productsWithImages);
+      // Log the full response data for debugging
+      console.log("Products API response:", response.data);
+
+      let productsArray = [];
+      if (Array.isArray(response.data)) {
+        productsArray = response.data;
+      } else if (response.data && Array.isArray(response.data.data)) {
+        productsArray = response.data.data;
       } else {
-        setError('No products found');
+        setError('Unexpected API response format.');
+        setLoading(false);
+        return;
       }
+
+      // Map the products to include the image URL
+      const productsWithImages = productsArray.map(product => ({
+        ...product,
+        imageUrl: product.imageCode ? `${BASE_URL}/api/Product/getProductImage/${product.imageCode}` : null
+      }));
+      setProducts(productsWithImages);
     } catch (err) {
       console.error('Error fetching products:', err);
       setError(err.message || 'Failed to load products. Please try again later.');

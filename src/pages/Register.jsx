@@ -147,12 +147,6 @@ const Register = () => {
       <div className="register-container">
         <h1>Join Krishilink</h1>
         <div className="register-form-container">
-          {message.text && (
-            <div className={`message ${message.type}`}>
-              {message.text}
-            </div>
-          )}
-          
           <form onSubmit={handleSubmit} className="register-form">
             <div className="form-group">
               <label htmlFor="fullName">Full Name *</label>
@@ -280,6 +274,12 @@ const Register = () => {
                 accept="image/*"
               />
             </div>
+
+            {message.text && (
+              <div className={`message ${message.type}`} style={{ marginBottom: '1rem' }}>
+                {message.text}
+              </div>
+            )}
 
             <button type="submit" className="register-button" disabled={loading}>
               {loading ? 'Registering...' : 'Register'}

@@ -236,12 +236,6 @@ const Login = () => {
             </button>
           </div>
 
-          {message.text && (
-            <div className={`message ${message.type}`}>
-              {message.text}
-            </div>
-          )}
-
           {activeTab === 'password' ? (
             <form onSubmit={handlePasswordLogin} className="login-form">
               <div className="form-group">
@@ -277,6 +271,12 @@ const Login = () => {
                   <span className="error-message">{validationErrors.password}</span>
                 )}
               </div>
+
+              {message.text && (
+                <div className={`message ${message.type}`} style={{ marginBottom: '1rem' }}>
+                  {message.text}
+                </div>
+              )}
 
               <button
                 type="submit"
@@ -331,6 +331,12 @@ const Login = () => {
                     </div>
                   )}
                 </>
+              )}
+
+              {message.text && (
+                <div className={`message ${message.type}`} style={{ marginBottom: '1rem' }}>
+                  {message.text}
+                </div>
               )}
 
               <button
