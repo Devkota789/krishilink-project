@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import DashboardNavbar from '../components/DashboardNavbar';
 import Footer from '../components/Footer';
@@ -47,6 +47,7 @@ const MyProducts = () => {
     image: null
   });
   const [isDeleting, setIsDeleting] = useState(false);
+  const [editError, setEditError] = useState('');
   const navigate = useNavigate();
   const { user } = useAuth();
 
@@ -57,6 +58,7 @@ const MyProducts = () => {
   const fetchProducts = async () => {
     try {
       const response = await productAPI.getMyProducts();
+      if (!response.success) throw new Error(response.error || "Failed to fetch products");
       const data = response.data;
       const validProducts = Array.isArray(data) ? data.map(product => ({
         ...product,
@@ -129,6 +131,7 @@ const MyProducts = () => {
   const handleUpdateProduct = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setEditError('');
     try {
       const formData = new FormData();
       formData.append('ProductName', editFormData.productName);
@@ -144,7 +147,20 @@ const MyProducts = () => {
       setIsEditing(false);
       fetchProducts();
     } catch (err) {
-      setError('Failed to update product');
+      let errorMsg = 'Failed to update product';
+      if (err.response && err.response.data) {
+        const data = err.response.data;
+        errorMsg = data.title || data.message || errorMsg;
+        if (data.errors) {
+          const details = Array.isArray(data.errors)
+            ? data.errors
+            : Object.values(data.errors).flat();
+          errorMsg += ': ' + details.join(', ');
+        }
+      } else if (err.message) {
+        errorMsg = err.message;
+      }
+      setEditError(errorMsg);
     } finally {
       setLoading(false);
     }
@@ -164,6 +180,25 @@ const MyProducts = () => {
   };
 
   if (loading) return <div className="loading-container">Loading...</div>;
+  if (error && error.toLowerCase().includes('not found')) {
+    return (
+      <div className='dashboard-container'>
+        <DashboardNavbar />
+        <div className="my-products-container">
+          <h1>My Products</h1>
+          <div className="product-list-view">
+            <div className="no-products-message">
+              <h2>No products found.</h2>
+              <p>
+                Please <Link to="/add-product" className="add-product-link">add your first product!</Link>
+              </p>
+            </div>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
   if (error) return <div className="error-container">Error: {error}</div>;
 
   return (
@@ -172,42 +207,57 @@ const MyProducts = () => {
       <div className="my-products-container">
           <h1>My Products</h1>
         <div className="product-list-view">
-          {products.map(product => (
-            <div 
-              key={product.productId} 
-              className="product-list-item" 
-              onClick={() => handleProductClick(product.productId)}
-            >
-              <ProductImage product={product} />
-              <div className="product-details">
-                <h3>{product.productName}</h3>
-                <p>ID: {product.productId}</p>
-                <p>Rate: ₹{product.rate}</p>
-                <p>Available: {product.availableQuantity} kg</p>
-                </div>
-                <div className="product-actions">
-                <button 
-                  className="edit-btn" 
-                  onClick={(e) => handleEditClick(e, product)}
-                >
-                  Edit
-                </button>
-                  <button 
-                    className="delete-btn" 
-                  onClick={(e) => handleDeleteClick(e, product.productId)}
-                    disabled={isDeleting}
-                  >
-                    {isDeleting ? 'Deleting...' : 'Delete'}
-                  </button>
-              </div>
+          {products.length === 0 ? (
+            <div className="no-products-message">
+              <h2>No products found.</h2>
+              <p>
+                Please <Link to="/add-product" className="add-product-link">add your first product!</Link>
+              </p>
             </div>
-          ))}
+          ) : (
+            products.map(product => (
+              <div 
+                key={product.productId} 
+                className="product-list-item" 
+                onClick={() => handleProductClick(product.productId)}
+              >
+                <ProductImage product={product} />
+                <div className="product-details">
+                  <h3>{product.productName}</h3>
+                  <div className="product-meta">
+                    <span>Category: <b>{product.category}</b></span>
+                    <span>Location: <b>{product.location}</b></span>
+                  </div>
+                  <div className="product-stats">
+                    <p className="rate">Rate: ₹{product.rate}</p>
+                    <p className="available">Available: {product.availableQuantity} {product.unit || 'kg'}</p>
+                  </div>
+                  </div>
+                  <div className="product-actions">
+                    <button 
+                      className="edit-btn"
+                      onClick={(e) => handleEditClick(e, product)}
+                    >
+                      <span role="img" aria-label="edit">✏️</span> Update
+                    </button>
+                    <button 
+                      className="delete-btn"
+                      onClick={(e) => handleDeleteClick(e, product.productId)}
+                      disabled={isDeleting}
+                    >
+                      <span role="img" aria-label="delete">🗑️</span> {isDeleting ? 'Deleting...' : 'Delete'}
+                    </button>
+                  </div>
+              </div>
+            ))
+          )}
         </div>
 
         {isEditing && (
           <div className="edit-form-modal">
             <form onSubmit={handleUpdateProduct}>
               <h2>Edit Product</h2>
+              {editError && <div className="edit-error-message">{editError}</div>}
               <input type="text" name="productName" value={editFormData.productName} onChange={handleInputChange} />
               <input type="number" name="rate" value={editFormData.rate} onChange={handleInputChange} />
               <input type="number" name="availableQuantity" value={editFormData.availableQuantity} onChange={handleInputChange} />
@@ -215,9 +265,11 @@ const MyProducts = () => {
               <input type="text" name="location" value={editFormData.location} onChange={handleInputChange} />
               <textarea name="description" value={editFormData.description} onChange={handleInputChange}></textarea>
               <input type="file" name="image" onChange={handleInputChange} />
-              <button type="submit" disabled={loading}>Update</button>
-              <button type="button" onClick={() => setIsEditing(false)}>Cancel</button>
-              </form>
+              <div className="form-actions">
+                <button type="submit" disabled={loading}>Update</button>
+                <button type="button" onClick={() => setIsEditing(false)}>Cancel</button>
+              </div>
+            </form>
           </div>
         )}
       </div>

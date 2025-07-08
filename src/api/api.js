@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { handleApiResponse } from './handleApiResponse';
 
 const BASE_URL = 'https://krishilink.shamir.com.np';
 
@@ -76,27 +77,124 @@ api.interceptors.response.use(
 
 // Auth API endpoints
 export const authAPI = {
-  registerUser: (userData) => api.post('/api/KrishilinkAuth/registerUser', userData),
+  registerUser: async (userData) => {
+    try {
+      const response = await api.post('/api/KrishilinkAuth/registerUser', userData);
+      return handleApiResponse(response);
+    } catch (err) {
+      if (err.response && err.response.data) {
+        return handleApiResponse(err.response);
+      }
+      return { success: false, error: 'Network error', errorDetails: [] };
+    }
+  },
   sendConfirmationEmail: (emailData) => api.post('/api/KrishilinkAuth/sendConfirmationEmail', emailData),
   confirmEmail: (token) => api.get(`/api/KrishilinkAuth/ConfirmEmail?token=${token}`),
-  passwordLogin: (credentials) => api.post('/api/KrishilinkAuth/passwordLogin', credentials),
+  passwordLogin: async (credentials) => {
+    try {
+      const response = await api.post('/api/KrishilinkAuth/passwordLogin', credentials);
+      return handleApiResponse(response);
+    } catch (err) {
+      if (err.response && err.response.data) {
+        return handleApiResponse(err.response);
+      }
+      return { success: false, error: 'Network error', errorDetails: [] };
+    }
+  },
   sendOTP: (otpData) => api.post('/api/KrishilinkAuth/sendOTP', otpData),
-  verifyOTP: (otpData) => api.post('/api/KrishilinkAuth/verifyOTP', otpData),
+  verifyOTP: async (otpData) => {
+    try {
+      const response = await api.post('/api/KrishilinkAuth/verifyOTP', otpData);
+      return handleApiResponse(response);
+    } catch (err) {
+      if (err.response && err.response.data) {
+        return handleApiResponse(err.response);
+      }
+      return { success: false, error: 'Network error', errorDetails: [] };
+    }
+  },
   refreshToken: (refreshToken) => api.post('/api/KrishilinkAuth/refreshToken', { refreshToken }),
   logout: (logoutData) => api.post('/api/KrishilinkAuth/logout', logoutData),
   // Add token invalidation endpoint if your API supports it
   invalidateToken: (token) => api.post('/api/KrishilinkAuth/invalidateToken', { token }),
 };
 
+// Wrapper for login to handle ApiResponse<T> and ApiError<T>
+export async function login({ emailOrPhone, password }) {
+  try {
+    const response = await authAPI.passwordLogin({ emailOrPhone, password });
+    const data = response.data;
+
+    if (data.success) {
+      // Success: ApiResponse<T>
+      return { success: true, data: data.data, message: data.message };
+    } else {
+      // ApiResponse<T> with success: false
+      let errorMsg = data.message || 'Login failed';
+      let errorDetails = [];
+      if (Array.isArray(data.errors)) {
+        errorDetails = data.errors;
+      } else if (data.errors && typeof data.errors === 'object') {
+        errorDetails = Object.values(data.errors).flat();
+      }
+      return { success: false, error: errorMsg, errorDetails };
+    }
+  } catch (err) {
+    // Axios error: check for ApiError<T> shape
+    if (err.response && err.response.data) {
+      const data = err.response.data;
+      let errorMsg = data.message || data.title || 'Login failed';
+      let errorDetails = [];
+      if (Array.isArray(data.errors)) {
+        errorDetails = data.errors;
+      } else if (data.errors && typeof data.errors === 'object') {
+        errorDetails = Object.values(data.errors).flat();
+      }
+      return { success: false, error: errorMsg, errorDetails };
+    }
+    // Network or unknown error
+    return { success: false, error: 'Network error', errorDetails: [] };
+  }
+}
+
 // Product API endpoints
 export const productAPI = {
-  getAllProducts: () => api.get('/api/Product/getProducts'),
+  getAllProducts: async () => {
+    try {
+      const response = await api.get('/api/Product/getProducts');
+      return handleApiResponse(response);
+    } catch (err) {
+      if (err.response && err.response.data) {
+        return handleApiResponse(err.response);
+      }
+      return { success: false, error: 'Network error', errorDetails: [] };
+    }
+  },
   getProductById: (productId) => api.get(`/api/Product/getProduct/${productId}`),
   getRelatedProducts: (productId) => api.get(`/api/Product/getRelatedProducts/${productId}`),
   getProductImage: (productImageCode) => api.get(`/api/Product/getProductImage/${productImageCode}`, { responseType: 'blob' }),
-  addProduct: (productData, config = {}) => api.post('/api/Product/addProduct', productData, config),
-
-  getMyProducts: () => api.get('/api/Product/getMyProducts'),
+  addProduct: async (productData, config = {}) => {
+    try {
+      const response = await api.post('/api/Product/addProduct', productData, config);
+      return handleApiResponse(response);
+    } catch (err) {
+      if (err.response && err.response.data) {
+        return handleApiResponse(err.response);
+      }
+      return { success: false, error: 'Network error', errorDetails: [] };
+    }
+  },
+  getMyProducts: async () => {
+    try {
+      const response = await api.get('/api/Product/getMyProducts');
+      return handleApiResponse(response);
+    } catch (err) {
+      if (err.response && err.response.data) {
+        return handleApiResponse(err.response);
+      }
+      return { success: false, error: 'Network error', errorDetails: [] };
+    }
+  },
   getMyProduct: (productId) => api.get(`/api/Product/getMyProduct/${productId}`),
   updateProduct: (productId, productData) => api.put(`/api/Product/updateProduct/${productId}`, productData),
   deleteProduct: (productId) => api.delete(`/api/Product/deleteProduct/${productId}`),

@@ -5,6 +5,7 @@
   border-radius: 16px;
   box-shadow: 0 4px 20px rgba(56, 142, 60, 0.1);
   padding: 2.5rem;
+  padding-top: 6rem; /* Add space for navbar */
 }
 
 .product-details-main {

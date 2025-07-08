@@ -3,7 +3,7 @@ import { productAPI, orderAPI } from '../api/api';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import './Products.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { FaSeedling, FaMapMarkerAlt, FaUser, FaPhone, FaBoxOpen, FaShoppingCart } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
@@ -82,6 +82,7 @@ const Products = () => {
       setOrderMessage({ text: 'Only buyers can place orders', type: 'error' });
       return;
     }
+    
 
     const quantity = orderQuantity[product.productId];
     if (!quantity || quantity <= 0) {
@@ -132,6 +133,26 @@ const Products = () => {
     );
   }
 
+  if (error && (error.toLowerCase().includes('not found') || error === 'Unexpected API response format.')) {
+    // Try to extract a message from the error or API response
+    let apiMessage = error === 'Unexpected API response format.' ? 'No products found.' : error;
+    return (
+      <div>
+        <Navbar />
+        <div className="products-container">
+          <h1>Our Products</h1>
+          <div className="no-products-message">
+            <h2>{apiMessage}</h2>
+            <p>
+              Please <Link to="/add-product" className="add-product-link">add your first product!</Link>
+            </p>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
   if (error) {
     return (
       <div>
@@ -158,8 +179,11 @@ const Products = () => {
           </div>
         )}
         {products.length === 0 ? (
-          <div className="no-products">
-            <p>No products available at the moment.</p>
+          <div className="no-products-message">
+            <h2>{(error && (error.toLowerCase().includes('not found') || error === 'Unexpected API response format.')) ? (error === 'Unexpected API response format.' ? 'No products found.' : error) : 'No products found.'}</h2>
+            <p>
+              Please <Link to="/add-product" className="add-product-link">add your first product!</Link>
+            </p>
           </div>
         ) : (
           <div className="products-grid">

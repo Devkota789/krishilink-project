@@ -39,7 +39,11 @@ const ProductDetails = () => {
       if (!response.ok) throw new Error('Product not found');
       const data = await response.json();
       console.log('Product data:', data);
-      setProduct(data);
+      const prod = data.data || data;
+      setProduct({
+        ...prod,
+        imageUrl: prod.imageCode ? `${BASE_URL}/api/Product/getProductImage/${prod.imageCode}` : null
+      });
       setLoading(false);
     } catch (err) {
       setError(err.message);
@@ -125,7 +129,7 @@ const ProductDetails = () => {
       >
         <div className="product-details-main">
           <motion.img
-            src={`${BASE_URL}/api/Product/getProductImage/${product.imageCode}`}
+            src={product.imageUrl || require('../assets/Images/no-image.png')}
             alt={product.productName}
             className="product-details-image"
             initial={{ opacity: 0, scale: 0.95 }}
@@ -134,7 +138,7 @@ const ProductDetails = () => {
             onError={(e) => {
               console.log('Image failed to load:', e.target.src);
               e.target.onerror = null;
-              e.target.src = 'https://via.placeholder.com/400x300?text=No+Image+Available';
+              e.target.src = require('../assets/Images/no-image.png');
             }}
           />
           <div className="product-details-info">

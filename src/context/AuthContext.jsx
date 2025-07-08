@@ -82,61 +82,40 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (credentials) => {
-    try {
-      // Clear any existing tokens first
-      localStorage.removeItem('authToken');
-      localStorage.removeItem('refreshToken');
-      setSessionToken(null);
+    // Clear any existing tokens first
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('refreshToken');
+    setSessionToken(null);
 
-      const formData = new FormData();
-      formData.append('EmailorPhone', credentials.emailOrPhone);
-      formData.append('Password', credentials.password);
-      
-      // Generate a unique device ID for this login session
-      const deviceId = generateDeviceId();
-      formData.append('DeviceId', deviceId);
-      
-      console.log('Login attempt with device ID:', deviceId);
+    const deviceId = generateDeviceId();
+    const formData = new FormData();
+    formData.append('EmailorPhone', credentials.emailOrPhone);
+    formData.append('Password', credentials.password);
+    formData.append('DeviceId', deviceId);
 
-      const response = await authAPI.passwordLogin(formData);
-      const data = response.data;
-      console.log('Login response:', data);
-
-      if (data && data.token) {
-        // Store the new token and update session
-        const newToken = data.token;
-        console.log(data.token);
-        setUser(data);
-        setSessionToken(newToken);
-        
-        localStorage.setItem('user', JSON.stringify(data));
-        localStorage.setItem('authToken', newToken);
-        
-        console.log('New token set:', newToken.substring(0, 20) + '...');
-        console.log('Session ID:', getSessionId());
-        
-        if (data.refreshToken) {
-          localStorage.setItem('refreshToken', data.refreshToken);
-        }
-        
-        return { success: true };
-      } else {
-        return { success: false, error: 'Invalid response from server' };
+    const result = await authAPI.passwordLogin(formData);
+    if (result.success && result.data && result.data.token) {
+      // Store the new token and update session
+      const newToken = result.data.token;
+      setUser(result.data);
+      setSessionToken(newToken);
+      localStorage.setItem('user', JSON.stringify(result.data));
+      localStorage.setItem('authToken', newToken);
+      if (result.data.refreshToken) {
+        localStorage.setItem('refreshToken', result.data.refreshToken);
       }
-    } catch (error) {
-      console.error('Login failed:', error);
-      const errorMessage = error.response?.data?.message || error.response?.data || 'Login failed';
-      return { success: false, error: errorMessage };
+      return { success: true };
+    } else {
+      return { success: false, error: result.error, errorDetails: result.errorDetails };
     }
   };
 
   const register = async (userData) => {
-    try {
-      const response = await authAPI.registerUser(userData);
-      return { success: true, data: response.data };
-    } catch (error) {
-      console.error('Registration failed:', error);
-      return { success: false, error: error.response?.data || 'Registration failed' };
+    const result = await authAPI.registerUser(userData);
+    if (result.success) {
+      return { success: true, data: result.data };
+    } else {
+      return { success: false, error: result.error, errorDetails: result.errorDetails };
     }
   };
 
@@ -209,32 +188,45 @@ export const AuthProvider = ({ children }) => {
       formData.append('EmailorPhone', emailOrPhone);
       formData.append('otp', otp);
 
-      const response = await authAPI.verifyOTP(formData);
-      const data = response.data;
+      const result = await authAPI.verifyOTP(formData);
+      console.log('verifyOTP result:', result);
 
-      if (data && data.token) {
+      if (result.success && result.data && result.data.token) {
         // Store the new token and update session
-        const newToken = data.token;
-        setUser(data.userData);
+        const newToken = result.data.token;
+        setUser(result.data);
         setSessionToken(newToken);
-        
-        localStorage.setItem('user', JSON.stringify(data.userData));
+
+        localStorage.setItem('user', JSON.stringify(result.data));
         localStorage.setItem('authToken', newToken);
-        
-        console.log('New OTP token set:', newToken.substring(0, 20) + '...');
-        console.log('Session ID:', getSessionId());
-        
-        if (data.refreshToken) {
-          localStorage.setItem('refreshToken', data.refreshToken);
+
+        if (result.data.refreshToken) {
+          localStorage.setItem('refreshToken', result.data.refreshToken);
         }
-        
+
         return { success: true };
       } else {
-        return { success: false, error: 'Invalid response from server' };
+        // Log error details for debugging
+        if (result && (result.error || result.errorDetails)) {
+          console.log('verifyOTP error:', result.error, result.errorDetails);
+        } else {
+          console.log('verifyOTP unknown error, raw result:', result);
+        }
+        return { success: false, error: result.error, errorDetails: result.errorDetails };
       }
     } catch (error) {
       console.error('OTP verification failed:', error);
-      const errorMessage = error.response?.data?.message || error.response?.data || 'OTP verification failed';
+      if (error.response) {
+        console.log('OTP verification error.response:', error.response);
+        console.log('OTP verification error.response.data:', error.response.data);
+      }
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data?.title ||
+        (error.response?.data?.errors
+          ? Object.values(error.response.data.errors).flat().join(' ')
+          : '') ||
+        'OTP verification failed';
       return { success: false, error: errorMessage };
     }
   };

@@ -16,7 +16,8 @@ const AddProduct = () => {
     productName: '',
     rate: '',
     availableQuantity: '',
-    category: '',
+    category: 'Vegetables',
+    unit: 'kg',
     location: '',
     description: ''
   });
@@ -75,6 +76,10 @@ const AddProduct = () => {
       setMessage({ type: 'error', text: 'Category is required.' });
       return false;
     }
+    if (!formData.unit.trim()) {
+      setMessage({ type: 'error', text: 'Unit is required.' });
+      return false;
+    }
     if (!formData.location.trim()) {
       setMessage({ type: 'error', text: 'Location is required.' });
       return false;
@@ -98,11 +103,17 @@ const AddProduct = () => {
       formDataToSend.append('ProductName', formData.productName ?? '');
       formDataToSend.append('Image', imageFile ?? '');
       formDataToSend.append('Rate', formData.rate !== undefined && formData.rate !== null ? formData.rate : '');
+      formDataToSend.append('Unit', formData.unit ?? 'kg');
       formDataToSend.append('AvailableQuantity', formData.availableQuantity !== undefined && formData.availableQuantity !== null ? formData.availableQuantity : '');
       formDataToSend.append('Category', formData.category ?? '');
       formDataToSend.append('Location', formData.location ?? '');
       if (formData.description && formData.description.trim()) {
         formDataToSend.append('Description', formData.description.trim());
+      }
+
+      // Debug: log all FormData key-value pairs
+      for (let [key, value] of formDataToSend.entries()) {
+        console.log('FormData:', key, value);
       }
 
       // Debug log: show the token being used
@@ -116,16 +127,21 @@ const AddProduct = () => {
   }
       };
 
-      const response = await productAPI.addProduct(formDataToSend, config);
-      
-      if (response.data) {
-        setMessage({ type: 'success', text: 'Product added successfully! Redirecting to dashboard...' });
+      const result = await productAPI.addProduct(formDataToSend, config);
+      if (result.success) {
+        setMessage({ type: 'success', text: (result.data && typeof result.data === 'string') ? result.data : 'Product added successfully! Redirecting to dashboard...' });
         setFormData({
-          productName: '', rate: '', availableQuantity: '', category: '', location: '', description: ''
+          productName: '', rate: '', availableQuantity: '', category: '', unit: '', location: '', description: ''
         });
         setImageFile(null);
         setImagePreview(null);
         setTimeout(() => navigate('/dashboard'), 2000);
+      } else {
+        let errorMsg = result.error || 'Failed to add product.';
+        if (Array.isArray(result.errorDetails) && result.errorDetails.length > 0) {
+          errorMsg += '\n' + result.errorDetails.join('\n');
+        }
+        setMessage({ type: 'error', text: errorMsg });
       }
     } catch (error) {
       console.error('Error adding product:', error);
@@ -148,10 +164,6 @@ const AddProduct = () => {
         </div>
 
         <h1>Add New Product</h1>
-
-        {message.text && (
-          <div className={`message ${message.type}`}>{message.text}</div>
-        )}
 
         <form className="product-form" onSubmit={handleSubmit}>
           <div className="form-group">
@@ -227,17 +239,46 @@ const AddProduct = () => {
               onChange={handleInputChange}
               required
             >
-              <option value="">Select a category</option>
-              <option value="Electronics">Electronics</option>
-              <option value="Clothing">Clothing</option>
-              <option value="Books">Books</option>
-              <option value="Home & Garden">Home & Garden</option>
-              <option value="Sports">Sports</option>
-              <option value="Automotive">Automotive</option>
-              <option value="Health & Beauty">Health & Beauty</option>
-              <option value="Toys & Games">Toys & Games</option>
-              <option value="Food & Beverages">Food & Beverages</option>
+              <option value="Vegetables">Vegetables</option>
+              <option value="Fruits">Fruits</option>
+              <option value="Grains">Grains</option>
+              <option value="Dairy">Dairy</option>
+              <option value="Livestock">Livestock</option>
+              <option value="Seeds">Seeds</option>
+              <option value="Spices & Herbs">Spices & Herbs</option>
+              <option value="Flowers & Plants">Flowers & Plants</option>
+              <option value="Pulses & Legumes">Pulses & Legumes</option>
+              <option value="Nuts">Nuts</option>
+              <option value="Beverages">Beverages</option>
+              <option value="Fish & Seafood">Fish & Seafood</option>
+              <option value="Eggs & Poultry">Eggs & Poultry</option>
+              <option value="Honey & Bee Products">Honey & Bee Products</option>
+              <option value="Organic Products">Organic Products</option>
+              <option value="Tools">Tools</option>
               <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="unit">Unit *</label>
+            <select
+              id="unit"
+              name="unit"
+              value={formData.unit}
+              onChange={handleInputChange}
+              required
+            >
+              <option value="kg">kg</option>
+              <option value="g">g</option>
+              <option value="quintal">quintal</option>
+              <option value="litre">litre</option>
+              <option value="ml">ml</option>
+              <option value="piece">piece</option>
+              <option value="dozen">dozen</option>
+              <option value="packet">packet</option>
+              <option value="sack">sack</option>
+              <option value="box">box</option>
+              <option value="other">other</option>
             </select>
           </div>
 
@@ -266,6 +307,9 @@ const AddProduct = () => {
             />
           </div>
 
+          {message.text && (
+            <div className={`message ${message.type}`}>{message.text}</div>
+          )}
           <button type="submit" className="submit-button" disabled={loading}>
             {loading ? 'Adding Product...' : 'Add Product'}
           </button>

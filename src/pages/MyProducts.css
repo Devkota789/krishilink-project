@@ -17,6 +17,7 @@
   margin-bottom: 2rem;
   font-size: 2.5rem;
   color: #2c3e50;
+  margin-top: 2.5rem;
 }
 
 .product-list-view {
@@ -57,53 +58,109 @@
 
 .product-details {
   flex-grow: 1;
-  padding: 1rem 1.5rem;
+  padding: 1.2rem 1.5rem 0.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .product-details h3 {
-  margin: 0 0 0.5rem 0;
-  font-size: 1.5rem;
-  color: #34495e;
+  margin: 0 0 0.3rem 0;
+  font-size: 1.6rem;
+  color: #2c3e50;
+  font-weight: 700;
+  word-break: break-word;
 }
 
-.product-details p {
-  margin: 0.25rem 0;
-  color: #7f8c8d;
+.product-meta {
+  font-size: 1rem;
+  color: #888;
+  margin-bottom: 0.5rem;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+  justify-content: flex-start;
+}
+.product-meta span {
+  color: #888;
+  font-weight: 500;
+}
+.product-meta b {
+  color: #34495e;
+  font-weight: 600;
+}
+
+.product-stats {
+  display: flex;
+  gap: 1.5rem;
+  margin: 0.5rem 0 0.5rem 0;
+  width: 100%;
+}
+.product-stats p {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+.product-stats .rate {
+  color: #16a085;
+}
+.product-stats .available {
+  color: #2980b9;
 }
 
 .product-actions {
   display: flex;
   gap: 1rem;
-  padding: 0 1.5rem 1.5rem 1.5rem;
+  padding: 0 1.5rem 1.2rem 1.5rem;
   justify-content: flex-end;
+  width: 100%;
 }
-
 .edit-btn,
 .delete-btn {
-  padding: 0.6rem 1.2rem;
+  padding: 0.7rem 1.6rem;
   border: none;
-  border-radius: 5px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.3s ease;
+  font-size: 1.08rem;
+  font-weight: 600;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.15s, outline 0.2s;
+  box-shadow: 0 2px 8px rgba(52,152,219,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  outline: none;
 }
-
-.edit-btn {
-  background-color: #3498db;
-  color: white;
+.edit-btn:focus,
+.delete-btn:focus {
+  outline: 2px solid #2980b9;
+  outline-offset: 2px;
 }
-
-.edit-btn:hover {
-  background-color: #2980b9;
-}
-
-.delete-btn {
-  background-color: #e74c3c;
-  color: white;
-}
-
+.edit-btn:hover,
 .delete-btn:hover {
-  background-color: #c0392b;
+  transform: scale(1.06);
+  box-shadow: 0 6px 18px rgba(52,152,219,0.18);
+  z-index: 1;
+}
+.edit-btn:active,
+.delete-btn:active {
+  transform: scale(0.98);
+  box-shadow: 0 2px 6px rgba(52,152,219,0.12);
+}
+.edit-btn {
+  background: linear-gradient(90deg, #3498db 60%, #6dd5fa 100%);
+  color: #fff;
+}
+.edit-btn:hover {
+  background: linear-gradient(90deg, #2980b9 60%, #3498db 100%);
+}
+.delete-btn {
+  background: linear-gradient(90deg, #e74c3c 60%, #ff7675 100%);
+  color: #fff;
+}
+.delete-btn:hover {
+  background: linear-gradient(90deg, #c0392b 60%, #e74c3c 100%);
 }
 
 .edit-form-modal {
@@ -210,6 +267,18 @@
 
 .add-product-button:hover {
   background-color: #1B5E20;
+}
+
+.add-product-link {
+  color: #2E7D32;
+  font-weight: 700;
+  text-decoration: underline;
+  transition: color 0.2s;
+  margin-left: 0.2rem;
+}
+.add-product-link:hover {
+  color: #1B5E20;
+  text-decoration: underline wavy;
 }
 
 .products-grid {
@@ -337,7 +406,24 @@
 }
 
 .no-products-message {
+  text-align: center;
+  padding: 3rem 1rem;
+  background: #f8f9fa;
+  border-radius: 12px;
   color: #7f8c8d;
+  margin: 2rem auto;
+  max-width: 500px;
+  box-shadow: 0 2px 12px rgba(44, 62, 80, 0.06);
+}
+.no-products-message h2 {
+  color: #2c3e50;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+.no-products-message p {
+  font-size: 1.2rem;
+  color: #388e3c;
+  margin: 0;
 }
 
 .unauthorized {
@@ -502,8 +588,9 @@
 
 .form-actions {
   display: flex;
-  gap: 10px;
-  margin-top: 20px;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 1rem;
 }
 
 .form-actions button {
@@ -531,4 +618,24 @@
 
 .form-actions button[type="button"]:hover {
   background-color: #da190b;
+} 
+
+@media (max-width: 600px) {
+  .edit-btn,
+  .delete-btn {
+    font-size: 1.15rem;
+    padding: 1rem 2rem;
+  }
+} 
+
+.edit-error-message {
+  background-color: #ffebee;
+  color: #c62828;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  text-align: center;
+  border: 1px solid #ffcdd2;
+  font-weight: 600;
+  animation: fadeIn 0.3s ease-in-out;
 } 

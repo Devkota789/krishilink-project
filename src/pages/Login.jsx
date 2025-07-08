@@ -187,13 +187,21 @@ const Login = () => {
 
     try {
       const result = await verifyOTP(otpLogin.emailOrPhone, otpLogin.otp);
+      console.log('OTP verify result:', result);
+      console.log('User in localStorage:', localStorage.getItem('user'));
+      console.log('Auth token in localStorage:', localStorage.getItem('authToken'));
 
       if (result.success) {
         setMessage({ text: 'Login successful! Redirecting...', type: 'success' });
-        navigate('/dashboard');
+        navigate('/dashboard', { replace: true });
       } else {
-        setMessage({ text: result.error || 'Invalid OTP', type: 'error' });
-        if (result.error?.includes('expired')) {
+        // Show all error details if present
+        let errorMsg = result.error || 'Invalid OTP';
+        if (Array.isArray(result.errorDetails) && result.errorDetails.length > 0) {
+          errorMsg += '\n' + result.errorDetails.join('\n');
+        }
+        setMessage({ text: errorMsg, type: 'error' });
+        if (typeof result.error === 'string' && result.error.toLowerCase().includes('expired')) {
           setOtpSent(false);
           setOtpTimer(0);
         }
