@@ -4,10 +4,11 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import './Products.css';
 import { useNavigate, Link } from 'react-router-dom';
-import { FaSeedling, FaMapMarkerAlt, FaUser, FaPhone, FaBoxOpen, FaShoppingCart } from 'react-icons/fa';
+import { FaSeedling, FaMapMarkerAlt, FaUser, FaPhone, FaBoxOpen, FaShoppingCart, FaComments } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import noImage from '../assets/Images/no-image.png';
+import GoLiveChatModal from '../components/GoLiveChatModal';
 
 const Products = () => {
   const [products, setProducts] = useState([]);
@@ -15,6 +16,7 @@ const Products = () => {
   const [error, setError] = useState(null);
   const [orderQuantity, setOrderQuantity] = useState({});
   const [orderMessage, setOrderMessage] = useState({ text: '', type: '' });
+  const [showGoLive, setShowGoLive] = useState(false);
   const BASE_URL = 'https://krishilink.shamir.com.np';
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -120,6 +122,14 @@ const Products = () => {
     }
   };
 
+  const handleLiveChat = (product) => {
+    if (!user) {
+      navigate('/login');
+    } else {
+      alert(`Open live chat for product: ${product.productName}`);
+    }
+  };
+
   if (loading) {
     return (
       <div>
@@ -207,35 +217,44 @@ const Products = () => {
                   <p className="description">{product.description}</p>
                   <div className="seller-info">
                     <p><FaUser /> {product.farmerName}</p>
-                    <p><FaMapMarkerAlt /> {product.location}</p>
+                    <p><FaMapMarkerAlt /> {product.city}</p>
                   </div>
-                  <div className="product-actions">
+                  {/* Remove standalone Live Chat Button */}
+                  <div className="product-actions" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <button 
                       className="view-details-btn"
                       onClick={() => handleSeeDetails(product.productId)}
                     >
                       View Details
                     </button>
-                    {user && user.role === 'buyer' && (
-                      <div className="order-section">
-                        <input
-                          type="number"
-                          min="1"
-                          max={product.availableQuantity}
-                          value={orderQuantity[product.productId] || ''}
-                          onChange={(e) => handleQuantityChange(product.productId, e.target.value)}
-                          placeholder="Quantity"
-                          className="quantity-input"
-                        />
-                        <button
-                          className="order-btn"
-                          onClick={() => handlePlaceOrder(product)}
-                        >
-                          <FaShoppingCart /> Order
-                        </button>
-                      </div>
-                    )}
+                    <button
+                      className="live-chat-btn"
+                      onClick={() => setShowGoLive(true)}
+                      title="Go Live"
+                      type="button"
+                    >
+                      Go Live
+                    </button>
                   </div>
+                  {user && user.role === 'buyer' && (
+                    <div className="order-section">
+                      <input
+                        type="number"
+                        min="1"
+                        max={product.availableQuantity}
+                        value={orderQuantity[product.productId] || ''}
+                        onChange={(e) => handleQuantityChange(product.productId, e.target.value)}
+                        placeholder="Quantity"
+                        className="quantity-input"
+                      />
+                      <button
+                        className="order-btn"
+                        onClick={() => handlePlaceOrder(product)}
+                      >
+                        <FaShoppingCart /> Order
+                      </button>
+                    </div>
+                  )}
                 </div>
               </motion.div>
             ))}
@@ -243,6 +262,7 @@ const Products = () => {
         )}
       </div>
       <Footer />
+      <GoLiveChatModal open={showGoLive} onClose={() => setShowGoLive(false)} />
     </div>
   );
 };

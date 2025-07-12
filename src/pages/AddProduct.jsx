@@ -5,6 +5,8 @@ import DashboardNavbar from '../components/DashboardNavbar';
 import Footer from '../components/Footer';
 import { productAPI } from '../api/api';
 import './AddProduct.css';
+import LocationPicker from '../components/LocationPicker';
+import '../components/BulkOrderModal.css';
 
 const AddProduct = () => {
   const navigate = useNavigate();
@@ -12,18 +14,24 @@ const AddProduct = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
   
+  const [location, setLocation] = useState({
+    latitude: '',
+    longitude: '',
+    address: ''
+  });
+
   const [formData, setFormData] = useState({
     productName: '',
     rate: '',
     availableQuantity: '',
     category: 'Vegetables',
     unit: 'kg',
-    location: '',
     description: ''
   });
   
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const [showLocationModal, setShowLocationModal] = useState(false);
 
   if (!user) {
     return (
@@ -80,8 +88,8 @@ const AddProduct = () => {
       setMessage({ type: 'error', text: 'Unit is required.' });
       return false;
     }
-    if (!formData.location.trim()) {
-      setMessage({ type: 'error', text: 'Location is required.' });
+    if (!location.latitude || !location.longitude) {
+      setMessage({ type: 'error', text: 'Please select a location on the map.' });
       return false;
     }
     if (!imageFile) {
@@ -106,7 +114,8 @@ const AddProduct = () => {
       formDataToSend.append('Unit', formData.unit ?? 'kg');
       formDataToSend.append('AvailableQuantity', formData.availableQuantity !== undefined && formData.availableQuantity !== null ? formData.availableQuantity : '');
       formDataToSend.append('Category', formData.category ?? '');
-      formDataToSend.append('Location', formData.location ?? '');
+      formDataToSend.append('Latitude', location.latitude);
+      formDataToSend.append('Longitude', location.longitude);
       if (formData.description && formData.description.trim()) {
         formDataToSend.append('Description', formData.description.trim());
       }
@@ -131,8 +140,9 @@ const AddProduct = () => {
       if (result.success) {
         setMessage({ type: 'success', text: (result.data && typeof result.data === 'string') ? result.data : 'Product added successfully! Redirecting to dashboard...' });
         setFormData({
-          productName: '', rate: '', availableQuantity: '', category: '', unit: '', location: '', description: ''
+          productName: '', rate: '', availableQuantity: '', category: '', unit: '', description: ''
         });
+        setLocation({ latitude: '', longitude: '', address: '' });
         setImageFile(null);
         setImagePreview(null);
         setTimeout(() => navigate('/dashboard'), 2000);
@@ -283,16 +293,13 @@ const AddProduct = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="location">Location *</label>
-            <input
-              type="text"
-              id="location"
-              name="location"
-              value={formData.location}
-              onChange={handleInputChange}
-              placeholder="Enter product location"
-              required
-            />
+            <label>Location *</label>
+            <button type="button" onClick={() => setShowLocationModal(true)} style={{ marginBottom: 8 }}>
+              {location.latitude && location.longitude ? 'Change Location' : 'Select Location'}
+            </button>
+            {location.latitude && location.longitude && (
+              <div style={{ color: '#2d7a2d', fontSize: 14, marginBottom: 4 }}>Location selected</div>
+            )}
           </div>
 
           <div className="form-group">
@@ -315,7 +322,30 @@ const AddProduct = () => {
           </button>
         </form>
       </div>
-      
+      {/* Location Picker Modal */}
+      {showLocationModal && (
+        <div className="bulk-order-modal-overlay" onClick={() => setShowLocationModal(false)}>
+          <div className="bulk-order-modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: 600 }}>
+            <div className="bulk-order-modal-header" style={{ background: '#2d7a2d', color: 'white' }}>
+              <h2 style={{ fontSize: '1.2rem' }}>Select Location</h2>
+              <button className="close-btn" onClick={() => setShowLocationModal(false)}>&times;</button>
+            </div>
+            <div className="bulk-order-modal-body">
+              <LocationPicker
+                latitude={location.latitude}
+                longitude={location.longitude}
+                address={location.address}
+                onLocationChange={setLocation}
+              />
+              <div style={{ textAlign: 'right', marginTop: 16 }}>
+                <button type="button" className="dashboard-button" onClick={() => setShowLocationModal(false)}>
+                  Done
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       <Footer />
     </div>
   );

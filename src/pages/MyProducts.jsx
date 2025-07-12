@@ -6,6 +6,7 @@ import Footer from '../components/Footer';
 import './MyProducts.css';
 import { productAPI } from '../api/api';
 import noImage from '../assets/Images/no-image.png';
+import GoLiveChatModal from '../components/GoLiveChatModal';
 
 const BASE_URL = 'https://krishilink.shamir.com.np';
 
@@ -50,6 +51,7 @@ const MyProducts = () => {
   const [editError, setEditError] = useState('');
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [showGoLive, setShowGoLive] = useState(false);
 
   useEffect(() => {
     fetchProducts();
@@ -179,6 +181,10 @@ const MyProducts = () => {
     }
   };
 
+  const handleGoLive = (product) => {
+    alert(`Go Live for product: ${product.productName}`);
+  };
+
   if (loading) return <div className="loading-container">Loading...</div>;
   if (error && error.toLowerCase().includes('not found')) {
     return (
@@ -247,6 +253,14 @@ const MyProducts = () => {
                     >
                       <span role="img" aria-label="delete">🗑️</span> {isDeleting ? 'Deleting...' : 'Delete'}
                     </button>
+                    <button
+                      className="live-chat-btn"
+                      onClick={(e) => { e.stopPropagation(); setShowGoLive(true); }}
+                      title="Go Live"
+                      type="button"
+                    >
+                      Go Live
+                    </button>
                   </div>
               </div>
             ))
@@ -274,6 +288,7 @@ const MyProducts = () => {
         )}
       </div>
       <Footer />
+      <GoLiveChatModal open={showGoLive} onClose={() => setShowGoLive(false)} />
     </div>
   );
 };

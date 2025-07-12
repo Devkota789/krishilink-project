@@ -155,7 +155,7 @@ const ProductDetails = () => {
             </p>
             <p>
               <FaMapMarkerAlt style={{ color: '#388e3c', marginRight: '0.3rem', verticalAlign: 'middle' }} />
-              <strong>Location:</strong> {product.location}
+              <strong>Location:</strong> {product.city}
             </p>
             <p>
               <FaUser style={{ color: '#388e3c', marginRight: '0.3rem', verticalAlign: 'middle' }} />

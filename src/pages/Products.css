@@ -105,29 +105,49 @@
 
 .product-actions {
   display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  margin-top: 1rem;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.2rem;
+  margin-bottom: 0.5rem;
 }
 
 .view-details-btn {
-  background-color: #2E7D32;
-  color: white;
-  padding: 0.75rem;
+  background-color: #388e3c;
+  color: #fff;
+  padding: 0.9rem 1.6rem;
   border: none;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-weight: 500;
+  border-radius: 8px;
+  font-size: 1.08rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
+  transition: background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 6px rgba(56, 142, 60, 0.08);
+  margin: 0;
+  min-width: 120px;
+}
+.view-details-btn:hover {
+  background-color: #256029;
+  box-shadow: 0 4px 12px rgba(56, 142, 60, 0.15);
 }
 
-.view-details-btn:hover {
-  background-color: #1B5E20;
+.live-chat-btn {
+  background-color: #fff;
+  color: #388e3c;
+  border: 2px solid #388e3c;
+  border-radius: 8px;
+  padding: 0.9rem 1.6rem;
+  font-size: 1.08rem;
+  font-weight: 600;
+  cursor: pointer;
+  min-width: 120px;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 6px rgba(56, 142, 60, 0.08);
+}
+.live-chat-btn:hover {
+  background: #388e3c;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(56, 142, 60, 0.15);
 }
 
 .order-section {

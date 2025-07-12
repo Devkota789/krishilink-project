@@ -33,7 +33,6 @@ const DashboardNavbar = () => {
           ) : (
             <>
               <Link to="/marketplace" className="nav-link">Marketplace</Link>
-              <Link to="/my-orders" className="nav-link">My Orders</Link>
             </>
           )}
         </div>

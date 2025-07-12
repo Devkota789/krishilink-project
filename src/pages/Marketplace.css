@@ -334,6 +334,22 @@
   color: #c62828;
 }
 
+.live-chat-btn {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  font-size: 1rem;
+  transition: background 0.2s;
+}
+.live-chat-btn:hover {
+  background-color: #388e3c;
+}
+
 @media (max-width: 768px) {
   .marketplace-header {
     flex-direction: column;

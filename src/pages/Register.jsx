@@ -3,6 +3,8 @@ import Navbar from '../components/Navbar';
 import './Register.css';
 import { useNavigate } from 'react-router-dom';
 import { authAPI } from '../api/api';
+import LocationPicker from '../components/LocationPicker';
+import '../components/BulkOrderModal.css';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -21,6 +23,8 @@ const Register = () => {
   const [message, setMessage] = useState({ text: '', type: '' });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [location, setLocation] = useState({ latitude: '', longitude: '', address: '' });
+  const [showLocationModal, setShowLocationModal] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -95,7 +99,11 @@ const Register = () => {
       formDataToSend.append('ConfirmPassword', formData.confirmPassword);
       formDataToSend.append('Role', formData.role);
       formDataToSend.append('DeviceId', 'web-' + Math.random().toString(36).substring(2));
-      
+      // Only include latitude/longitude if present
+      if (location.latitude && location.longitude) {
+        formDataToSend.append('Latitude', location.latitude);
+        formDataToSend.append('Longitude', location.longitude);
+      }
       // Optional fields
       if (formData.address) formDataToSend.append('Address', formData.address);
       if (formData.city) formDataToSend.append('City', formData.city);
@@ -118,6 +126,7 @@ const Register = () => {
         role: 'farmer',
         image: null
       });
+      setLocation({ latitude: '', longitude: '', address: '' });
       // Redirect to login after 2 seconds
       setTimeout(() => {
         navigate('/login');
@@ -187,39 +196,13 @@ const Register = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="address">Address</label>
-              <input
-                type="text"
-                id="address"
-                name="address"
-                value={formData.address}
-                onChange={handleChange}
-                placeholder="Enter your address"
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="city">City</label>
-              <input
-                type="text"
-                id="city"
-                name="city"
-                value={formData.city}
-                onChange={handleChange}
-                placeholder="Enter your city"
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="state">State</label>
-              <input
-                type="text"
-                id="state"
-                name="state"
-                value={formData.state}
-                onChange={handleChange}
-                placeholder="Enter your state"
-              />
+              <label>Location *</label>
+              <button type="button" onClick={() => setShowLocationModal(true)} style={{ marginBottom: 8 }}>
+                {location.latitude && location.longitude ? 'Change Location' : 'Select Location'}
+              </button>
+              {location.latitude && location.longitude && (
+                <div style={{ color: '#2d7a2d', fontSize: 14, marginBottom: 4 }}>Location selected</div>
+              )}
             </div>
 
             <div className="form-group">
@@ -287,6 +270,30 @@ const Register = () => {
           </form>
         </div>
       </div>
+      {/* Location Picker Modal */}
+      {showLocationModal && (
+        <div className="bulk-order-modal-overlay" onClick={() => setShowLocationModal(false)}>
+          <div className="bulk-order-modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: 600 }}>
+            <div className="bulk-order-modal-header" style={{ background: '#2d7a2d', color: 'white' }}>
+              <h2 style={{ fontSize: '1.2rem' }}>Select Location</h2>
+              <button className="close-btn" onClick={() => setShowLocationModal(false)}>&times;</button>
+            </div>
+            <div className="bulk-order-modal-body">
+              <LocationPicker
+                latitude={location.latitude}
+                longitude={location.longitude}
+                address={location.address}
+                onLocationChange={setLocation}
+              />
+              <div style={{ textAlign: 'right', marginTop: 16 }}>
+                <button type="button" className="register-button" onClick={() => setShowLocationModal(false)}>
+                  Done
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -17,8 +17,6 @@ const Marketplace = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [orderQuantity, setOrderQuantity] = useState({});
   const [orderMessage, setOrderMessage] = useState({ text: '', type: '' });
-  const [cart, setCart] = useState([]);
-  const [showCart, setShowCart] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
   const BASE_URL = 'https://krishilink.shamir.com.np';
@@ -119,55 +117,18 @@ const Marketplace = () => {
     }
   };
 
-  // Cart logic
-  const handleAddToCart = (product) => {
-    if (!user) {
-      setOrderMessage({ text: 'Please login to add to cart', type: 'error' });
-      return;
-    }
-    if (user.role !== 'buyer') {
-      setOrderMessage({ text: 'Only buyers can add to cart', type: 'error' });
-      return;
-    }
-    const quantity = parseInt(orderQuantity[product.id], 10);
-    if (!quantity || quantity <= 0) {
-      setOrderMessage({ text: 'Please enter a valid quantity', type: 'error' });
-      return;
-    }
-    if (cart.some(item => item.id === product.id)) {
-      setOrderMessage({ text: 'Product already in cart', type: 'error' });
-      return;
-    }
-    setCart(prev => ([
-      ...prev,
-      {
-        ...product,
-        quantity,
-      }
-    ]));
-    setOrderMessage({ text: 'Added to cart!', type: 'success' });
-    setOrderQuantity(prev => ({ ...prev, [product.id]: '' }));
-  };
-
-  const handleRemoveFromCart = (index) => {
-    setCart(prev => prev.filter((_, i) => i !== index));
-  };
-
-  const handleUpdateCartQuantity = (index, newQuantity) => {
-    setCart(prev => prev.map((item, i) => i === index ? { ...item, quantity: newQuantity } : item));
-  };
-
-  const handleOrderSuccess = () => {
-    setCart([]);
-    fetchProducts();
-    setOrderMessage({ text: 'Bulk order placed successfully!', type: 'success' });
-    setTimeout(() => {
-      navigate('/my-orders');
-    }, 1500);
-  };
+  // Remove cart-related state and handlers
 
   const handleImageError = (e) => {
     e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmMGYwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPk5vIEltYWdlPC90ZXh0Pjwvc3ZnPg==';
+  };
+
+  const handleLiveChat = (product) => {
+    if (!user) {
+      navigate('/login');
+    } else {
+      alert(`Open live chat for product: ${product.name}`);
+    }
   };
 
   if (loading) {
@@ -209,16 +170,7 @@ const Marketplace = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <button
-              className="cart-icon-btn"
-              onClick={() => setShowCart(true)}
-              style={{ marginLeft: '1rem', position: 'relative' }}
-            >
-              <FaShoppingCart size={24} />
-              {cart.length > 0 && (
-                <span className="cart-badge">{cart.length}</span>
-              )}
-            </button>
+            {/* Remove cart icon/button */}
           </div>
         </div>
 
@@ -262,9 +214,17 @@ const Marketplace = () => {
                       <FaPhone /> {product.sellerPhoneNumber}
                     </p>
                     <p>
-                      <FaMapMarkerAlt /> {product.location}
+                      <FaMapMarkerAlt /> {product.address}
                     </p>
                   </div>
+                  {/* Live Chat Button */}
+                  <button
+                    className="live-chat-btn"
+                    onClick={() => handleLiveChat(product)}
+                    style={{ marginTop: '8px', marginBottom: '8px' }}
+                  >
+                    Live Chat
+                  </button>
                   {user && (
                     <div className="order-section">
                       <input
@@ -282,14 +242,6 @@ const Marketplace = () => {
                       >
                         <FaShoppingCart /> Place Order
                       </button>
-                      <button
-                        className="add-to-cart-btn"
-                        onClick={() => handleAddToCart(product)}
-                        disabled={!user}
-                        style={{ marginLeft: '0.5rem' }}
-                      >
-                        <FaShoppingCart /> Add to Cart
-                      </button>
                     </div>
                   )}
                 </div>
@@ -298,14 +250,7 @@ const Marketplace = () => {
           )}
         </div>
       </div>
-      <BulkOrderModal
-        isOpen={showCart}
-        onClose={() => setShowCart(false)}
-        cartItems={cart}
-        onOrderSuccess={handleOrderSuccess}
-        onRemoveItem={handleRemoveFromCart}
-        onUpdateQuantity={handleUpdateCartQuantity}
-      />
+      {/* Remove BulkOrderModal */}
       <Footer />
     </div>
   );
