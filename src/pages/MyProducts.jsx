@@ -114,7 +114,7 @@ const MyProducts = () => {
       rate: product.rate,
       availableQuantity: product.availableQuantity,
       category: product.category,
-      location: product.location,
+      location: product.address,
       description: product.description,
       image: null
     });
@@ -232,7 +232,7 @@ const MyProducts = () => {
                   <h3>{product.productName}</h3>
                   <div className="product-meta">
                     <span>Category: <b>{product.category}</b></span>
-                    <span>Location: <b>{product.location}</b></span>
+                    <span>Location: <b>{product.city}</b></span>
                   </div>
                   <div className="product-stats">
                     <p className="rate">Rate: ₹{product.rate}</p>

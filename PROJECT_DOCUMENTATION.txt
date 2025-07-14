@@ -1,0 +1,110 @@
+KrishiLink React Project Documentation
+
+1. Project Purpose
+------------------
+KrishiLink is a React-based web application, likely designed for agricultural product management, marketplace, and user interaction.
+(If you have a more specific description, please update this section.)
+
+2. Main Features / Functionality
+-------------------------------
+- Product Management:
+  - Add, view, and manage products (AddProduct, Products, MyProducts, ProductDetails)
+- Marketplace:
+  - Browse and interact with products (Marketplace)
+- User Authentication:
+  - Register, login, and manage sessions (Register, Login)
+- Orders:
+  - View and manage orders (MyOrders)
+- Informational Pages:
+  - Home, Contact, Why Us
+
+3. Key Components and Functions
+------------------------------
+From src/components/:
+- Navigation:
+  - Navbar, DashboardNavbar
+- Footer:
+  - Footer
+- Modals:
+  - BulkOrderModal, GoLiveChatModal
+- Location Picker:
+  - LocationPicker
+- Token Monitoring:
+  - TokenMonitor
+- PrivateRoute:
+  - Route protection for authenticated pages
+
+From src/context/:
+- AuthContext:
+  - Provides authentication state and functions (login, logout, register, token management)
+
+From src/api/:
+- api.js:
+  - Axios instance with interceptors for authentication and error handling
+  - API functions for authentication and product management
+- handleApiResponse.js:
+  - Utility for standardizing API responses
+
+4. Project Tools & Technologies Used
+-----------------------------------
+- React (v19+)
+- Vite (for fast development/build)
+- Axios (API requests)
+- React Router DOM (routing)
+- Framer Motion (animations)
+- i18next (internationalization)
+- React Icons (icon library)
+- ESLint (linting)
+- Other dev tools: Babel, SWC, etc.
+
+5. How to Run/Setup the Project
+------------------------------
+Scripts (from package.json):
+- npm install — Install dependencies
+- npm run dev — Start development server
+- npm run build — Build for production
+- npm run preview — Preview production build
+- npm run lint — Lint the code
+
+Typical setup:
+  npm install
+  npm run dev
+
+6. API Structure
+----------------
+API utilities in src/api/api.js:
+- Auth endpoints: register, login, send OTP, verify OTP, refresh token, logout
+- Product endpoints: get all products, get product by ID, add/update/delete product, get related products, get product image, get user’s products/orders
+
+Interceptors:
+- Adds Authorization header if token exists
+- Handles session expiration and redirects to login
+
+7. State Management
+-------------------
+- AuthContext (src/context/AuthContext.jsx):
+  Handles user authentication state, token storage, and provides context to the app.
+
+8. How to Contribute/Extend
+---------------------------
+- Fork and clone the repository
+- Create a new branch for your feature or bugfix
+- Follow the code style (ESLint)
+- Submit a pull request with a clear description
+
+9. File/Folder Structure
+------------------------
+- src/pages/ — Main app pages (features)
+- src/components/ — Reusable UI components
+- src/context/ — Context providers (e.g., Auth)
+- src/api/ — API utilities and configuration
+- public/ — Static assets
+- assets/ — Images and icons
+
+10. Further Documentation
+-------------------------
+- Add more details to each section as your project grows.
+- Document each component and API function with JSDoc or comments.
+- Consider using a tool like Storybook (https://storybook.js.org/) for UI documentation.
+
+(Feel free to expand or update this file as your project evolves!) 

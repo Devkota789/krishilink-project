@@ -298,7 +298,7 @@ const AddProduct = () => {
               {location.latitude && location.longitude ? 'Change Location' : 'Select Location'}
             </button>
             {location.latitude && location.longitude && (
-              <div style={{ color: '#2d7a2d', fontSize: 14, marginBottom: 4 }}>Location selected</div>
+              <div style={{ color: '#298129ff', fontSize: 14, marginBottom: 4 }}>Location selected</div>
             )}
           </div>
 

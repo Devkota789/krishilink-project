@@ -1,4 +1,6 @@
 import React, { useState, useRef } from 'react';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const SIGNALR_URL = 'https://krishilink.shamir.com.np/chatHub';
 const LOGIN_URL = 'https://krishilink.shamir.com.np/api/KrishilinkAuth/passwordLogin';
@@ -13,6 +15,8 @@ const boxStyle = {
 };
 
 export default function GoLiveChatModal({ open, onClose }) {
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [step, setStep] = useState('login'); // 'login' | 'chat'
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -37,7 +41,6 @@ export default function GoLiveChatModal({ open, onClose }) {
 
   React.useEffect(() => {
     if (open) {
-      setStep('login');
       setError('');
       setToken(null);
       setFullName('');
@@ -45,8 +48,17 @@ export default function GoLiveChatModal({ open, onClose }) {
       setReceiverId('');
       setMessages([]);
       setChatInput('');
+      if (user) {
+        setStep('chat');
+        setFullName(user.fullName || user.email || user.phoneNumber || 'You');
+        setUserId(user.id);
+        setToken(localStorage.getItem('authToken'));
+      } else {
+        if (onClose) onClose();
+        navigate('/login');
+      }
     }
-  }, [open]);
+  }, [open, user, navigate, onClose]);
 
   React.useEffect(() => {
     if (messagesDivRef.current) {
@@ -195,7 +207,7 @@ export default function GoLiveChatModal({ open, onClose }) {
               />
               <button onClick={handleLoadHistory} style={{ width: '100%', marginBottom: 10, padding: 10, borderRadius: 5, background: '#eee', border: 'none', cursor: 'pointer' }} disabled={historyLoading}>{historyLoading ? 'Loading...' : 'Load Chat History'}</button>
             </div>
-            <div ref={messagesDivRef} style={{ height: 250, overflowY: 'auto', background: '#f9f9f9', border: '1px solid #eee', borderRadius: 5, padding: 10, marginBottom: 10 }}>
+            <div ref={meussagesDivRef} style={{ height: 250, overflowY: 'auto', background: '#f9f9f9', border: '1px solid #eee', borderRadius: 5, padding: 10, marginBottom: 10 }}>
               {messages.map((msg, i) => (
                 <div key={i} style={{ fontWeight: msg.isOwn ? 'bold' : 'normal', color: msg.sender === 'System' ? '#d8000c' : undefined }}>{msg.sender ? `${msg.sender}: ` : ''}{msg.text}</div>
               ))}
