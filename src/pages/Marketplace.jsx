@@ -8,6 +8,7 @@ import { FaUser, FaPhone, FaMapMarkerAlt, FaShoppingCart, FaSeedling } from 'rea
 import { motion } from 'framer-motion';
 import BulkOrderModal from '../components/BulkOrderModal';
 import './Marketplace.css';
+import NatureButton from '../components/NatureButton';
 
 const Marketplace = () => {
   const [products, setProducts] = useState([]);
@@ -131,6 +132,14 @@ const Marketplace = () => {
     }
   };
 
+  const sproutSVG = (
+    <svg viewBox="0 0 24 24" fill="none" width="24" height="24">
+      <ellipse cx="12" cy="18" rx="6" ry="4" fill="#A5D6A7" />
+      <path d="M12 18 Q13 10 22 8" stroke="#4CAF50" strokeWidth="2" fill="none" />
+      <ellipse cx="16" cy="10" rx="1.5" ry="2.5" fill="#81C784" />
+    </svg>
+  );
+
   if (loading) {
     return (
       <div className="marketplace-container">
@@ -149,9 +158,9 @@ const Marketplace = () => {
         <DashboardNavbar />
         <div className="error-container">
           <p>{error}</p>
-          <button onClick={fetchProducts} className="retry-button">
+          <NatureButton onClick={fetchProducts} className="retry-button">
             Retry
-          </button>
+          </NatureButton>
         </div>
       </div>
     );
@@ -181,20 +190,24 @@ const Marketplace = () => {
         )}
 
         <div className="products-grid">
-          {products.length === 0 ? (
+          {products.filter(p => p.isActive).length === 0 ? (
             <div className="no-products">
               <p>No products available at the moment.</p>
             </div>
           ) : (
-            products.map((product) => (
+            products.filter(p => p.isActive).map((product) => (
               <motion.div
                 key={product.id}
-                className="product-card"
+                className="nature-card product-card"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
                 whileHover={{ scale: 1.02 }}
               >
+                <span className="sprout-corner top-left">{sproutSVG}</span>
+                <span className="sprout-corner top-right">{sproutSVG}</span>
+                <span className="sprout-corner bottom-left">{sproutSVG}</span>
+                <span className="sprout-corner bottom-right">{sproutSVG}</span>
                 <div className="product-image">
                   <img 
                     src={product.imageUrl || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmMGYwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPk5vIEltYWdlPC90ZXh0Pjwvc3ZnPg=='} 
@@ -203,7 +216,10 @@ const Marketplace = () => {
                   />
                 </div>
                 <div className="product-info">
-                  <h3>{product.name}</h3>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5em', marginBottom: '0.2em' }}>
+                    <span className={`status-badge ${product.isActive ? 'active' : 'inactive'}`}>{product.isActive ? 'Active' : 'Inactive'}</span>
+                    <h3 style={{ margin: 0 }}>{product.name}</h3>
+                  </div>
                   <p className="price">₹{product.price} per kg</p>
                   <p className="description">{product.description}</p>
                   <div className="seller-info">
@@ -218,13 +234,13 @@ const Marketplace = () => {
                     </p>
                   </div>
                   {/* Live Chat Button */}
-                  <button
+                  <NatureButton
                     className="live-chat-btn"
                     onClick={() => handleLiveChat(product)}
                     style={{ marginTop: '8px', marginBottom: '8px' }}
                   >
                     Live Chat
-                  </button>
+                  </NatureButton>
                   {user && (
                     <div className="order-section">
                       <input
@@ -235,13 +251,13 @@ const Marketplace = () => {
                         placeholder="Enter Quantity (kg)"
                         className="quantity-input"
                       />
-                      <button
+                      <NatureButton
                         className="order-button"
                         onClick={() => handlePlaceOrder(product)}
                         disabled={!user}
                       >
                         <FaShoppingCart /> Place Order
-                      </button>
+                      </NatureButton>
                     </div>
                   )}
                 </div>

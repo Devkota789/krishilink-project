@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
+import NatureButton from '../components/NatureButton';
+import InputSprout from '../components/InputSprout';
+import FormProgressBar from '../components/FormProgressBar';
 import './Login.css';
 
 const Login = () => {
@@ -230,24 +233,23 @@ const Login = () => {
         <h1>Welcome Back</h1>
         <div className="login-form-container">
           <div className="login-tabs">
-            <button
+            <NatureButton
               className={`tab ${activeTab === 'otp' ? 'active' : ''}`}
               onClick={() => setActiveTab('otp')}
             >
               Login with OTP
-            </button>
-            <button
+            </NatureButton>
+            <NatureButton
               className={`tab ${activeTab === 'password' ? 'active' : ''}`}
               onClick={() => setActiveTab('password')}
             >
               Login with Password
-            </button>
+            </NatureButton>
           </div>
 
           {activeTab === 'password' ? (
             <form onSubmit={handlePasswordLogin} className="login-form">
-              <div className="form-group">
-                <label htmlFor="emailOrPhone">Email or Phone Number</label>
+              <div className="input-sprout-group">
                 <input
                   type="text"
                   id="emailOrPhone"
@@ -258,13 +260,14 @@ const Login = () => {
                   required
                   className={validationErrors.emailOrPhone ? 'error' : ''}
                 />
-                {validationErrors.emailOrPhone && (
-                  <span className="error-message">{validationErrors.emailOrPhone}</span>
-                )}
+                <span className="input-sprout-underline" />
+                <span className="input-sprout"><InputSprout /></span>
               </div>
+              {validationErrors.emailOrPhone && (
+                <span className="error-message">{validationErrors.emailOrPhone}</span>
+              )}
 
-              <div className="form-group">
-                <label htmlFor="password">Password</label>
+              <div className="input-sprout-group">
                 <input
                   type="password"
                   id="password"
@@ -275,10 +278,12 @@ const Login = () => {
                   placeholder="Enter your password"
                   className={validationErrors.password ? 'error' : ''}
                 />
-                {validationErrors.password && (
-                  <span className="error-message">{validationErrors.password}</span>
-                )}
+                <span className="input-sprout-underline" />
+                <span className="input-sprout"><InputSprout /></span>
               </div>
+              {validationErrors.password && (
+                <span className="error-message">{validationErrors.password}</span>
+              )}
 
               {message.text && (
                 <div className={`message ${message.type}`} style={{ marginBottom: '1rem' }}>
@@ -286,18 +291,19 @@ const Login = () => {
                 </div>
               )}
 
-              <button
+              {loading && <FormProgressBar progress={100} />}
+
+              <NatureButton
                 type="submit"
                 className="submit-button"
                 disabled={loading}
               >
                 {loading ? 'Logging in...' : 'Login'}
-              </button>
+              </NatureButton>
             </form>
           ) : (
             <form onSubmit={otpSent ? handleOtpLogin : handleSendOtp} className="login-form">
-              <div className="form-group">
-                <label htmlFor="otpEmailOrPhone">Email or Phone Number</label>
+              <div className="input-sprout-group">
                 <input
                   type="text"
                   id="otpEmailOrPhone"
@@ -309,15 +315,16 @@ const Login = () => {
                   required
                   className={validationErrors.emailOrPhone ? 'error' : ''}
                 />
-                {validationErrors.emailOrPhone && (
-                  <span className="error-message">{validationErrors.emailOrPhone}</span>
-                )}
+                <span className="input-sprout-underline" />
+                <span className="input-sprout"><InputSprout /></span>
               </div>
+              {validationErrors.emailOrPhone && (
+                <span className="error-message">{validationErrors.emailOrPhone}</span>
+              )}
 
               {otpSent && (
                 <>
-                  <div className="form-group">
-                    <label htmlFor="otp">OTP</label>
+                  <div className="input-sprout-group">
                     <input
                       type="text"
                       id="otp"
@@ -329,10 +336,12 @@ const Login = () => {
                       maxLength="6"
                       className={validationErrors.otp ? 'error' : ''}
                     />
-                    {validationErrors.otp && (
-                      <span className="error-message">{validationErrors.otp}</span>
-                    )}
+                    <span className="input-sprout-underline" />
+                    <span className="input-sprout"><InputSprout /></span>
                   </div>
+                  {validationErrors.otp && (
+                    <span className="error-message">{validationErrors.otp}</span>
+                  )}
                   {otpTimer > 0 && (
                     <div className="otp-timer">
                       OTP expires in: {formatTime(otpTimer)}
@@ -347,7 +356,7 @@ const Login = () => {
                 </div>
               )}
 
-              <button
+              <NatureButton
                 type="submit"
                 className="submit-button"
                 disabled={loading || (otpSent && otpTimer === 0)}
@@ -355,10 +364,10 @@ const Login = () => {
                 {loading
                   ? (otpSent ? 'Verifying...' : 'Sending OTP...')
                   : (otpSent ? 'Verify OTP' : 'Send OTP')}
-              </button>
+              </NatureButton>
 
               {otpSent && (
-                <button
+                <NatureButton
                   type="button"
                   className="resend-button"
                   onClick={() => {
@@ -371,7 +380,7 @@ const Login = () => {
                   disabled={loading}
                 >
                   Change Email/Phone
-                </button>
+                </NatureButton>
               )}
             </form>
           )}

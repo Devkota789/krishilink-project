@@ -1,0 +1,113 @@
+/* src/components/LeafCursor.css */
+.leaf-cursor {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 32px;
+  height: 32px;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%) scale(1);
+  transition: filter 0.2s;
+  animation: none;
+  filter: drop-shadow(0 2px 4px rgba(60,179,113,0.2));
+}
+
+@keyframes leaf-bob {
+  0% { transform: translate(-50%, -50%) scale(1) translateY(0); }
+  100% { transform: translate(-50%, -50%) scale(1) translateY(-2px); }
+}
+
+.leaf-cursor-hover {
+  filter: drop-shadow(0 0 10px #C8E6C9) brightness(1.2);
+}
+
+.leaf-cursor-hover img {
+  filter: brightness(1.2) drop-shadow(0 0 10px #C8E6C9);
+}
+
+.leaf-sprout {
+  position: absolute;
+  left: 18px;
+  top: 8px;
+  width: 10px;
+  height: 10px;
+  background: radial-gradient(circle at 50% 50%, #bfff80 60%, transparent 100%);
+  border-radius: 50%;
+  opacity: 0.8;
+  animation: sprout-pop 0.3s linear;
+}
+
+@keyframes sprout-pop {
+  0% { transform: scale(0.2); opacity: 0.5; }
+  60% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(1); opacity: 0; }
+}
+
+.leaf-ripple {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 40px;
+  height: 40px;
+  background: rgba(165, 214, 167, 0.25);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0.7);
+  pointer-events: none;
+  animation: ripple 0.6s linear forwards;
+  z-index: 1;
+}
+
+@keyframes ripple {
+  0% { opacity: 0.7; transform: translate(-50%, -50%) scale(0.7); }
+  80% { opacity: 0.3; transform: translate(-50%, -50%) scale(1.2); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.5); }
+}
+
+.leaf-pollen {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: radial-gradient(circle at 50% 50%, #fffde4 60%, #A5D6A7 100%);
+  border-radius: 50%;
+  opacity: 0.7;
+  pointer-events: none;
+  animation: pollen-fade 0.5s linear forwards;
+}
+
+@keyframes pollen-fade {
+  0% { opacity: 0.7; }
+  100% { opacity: 0; }
+}
+
+.leaf-cursor-drag {
+  /* Optionally tilt more on drag */
+}
+
+.leaf-dewdrop {
+  position: absolute;
+  left: 16px;
+  top: 4px;
+  width: 8px;
+  height: 8px;
+  background: radial-gradient(circle at 50% 60%, #b3e5fc 70%, #81d4fa 100%);
+  border-radius: 50%;
+  opacity: 0.85;
+  animation: dewdrop-fall 1.2s linear;
+}
+
+@keyframes dewdrop-fall {
+  0% { top: 4px; opacity: 0.85; }
+  80% { top: 24px; opacity: 1; }
+  100% { top: 32px; opacity: 0; }
+}
+
+/* Placeholder for butterfly animation */
+.leaf-butterfly {
+  position: absolute;
+  left: 40px;
+  top: -10px;
+  width: 32px;
+  height: 32px;
+  z-index: 2;
+} 

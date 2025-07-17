@@ -198,6 +198,7 @@ export const productAPI = {
   getMyProduct: (productId) => api.get(`/api/Product/getMyProduct/${productId}`),
   updateProduct: (productId, productData) => api.put(`/api/Product/updateProduct/${productId}`, productData),
   deleteProduct: (productId) => api.delete(`/api/Product/deleteProduct/${productId}`),
+  updateProductStatus: (productId, isActive) => api.put(`/api/Product/updateProductStatus/${productId}`, { isActive }),
   getNearProducts: async (latitude, longitude) => {
     try {
       const response = await api.get(`/api/Product/getNearProducts/${latitude},${longitude}`);

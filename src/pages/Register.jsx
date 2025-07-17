@@ -5,6 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import { authAPI } from '../api/api';
 import LocationPicker from '../components/LocationPicker';
 import '../components/BulkOrderModal.css';
+import NatureButton from '../components/NatureButton';
+import InputSprout from '../components/InputSprout';
+import FormProgressBar from '../components/FormProgressBar';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -157,8 +160,7 @@ const Register = () => {
         <h1>Join Krishilink</h1>
         <div className="register-form-container">
           <form onSubmit={handleSubmit} className="register-form">
-            <div className="form-group">
-              <label htmlFor="fullName">Full Name *</label>
+            <div className="input-sprout-group">
               <input
                 type="text"
                 id="fullName"
@@ -168,10 +170,11 @@ const Register = () => {
                 required
                 placeholder="Enter your full name"
               />
+              <span className="input-sprout-underline" />
+              <span className="input-sprout"><InputSprout /></span>
             </div>
 
-            <div className="form-group">
-              <label htmlFor="email">Email</label>
+            <div className="input-sprout-group">
               <input
                 type="email"
                 id="email"
@@ -180,10 +183,11 @@ const Register = () => {
                 onChange={handleChange}
                 placeholder="Enter your email"
               />
+              <span className="input-sprout-underline" />
+              <span className="input-sprout"><InputSprout /></span>
             </div>
 
-            <div className="form-group">
-              <label htmlFor="phoneNumber">Phone Number</label>
+            <div className="input-sprout-group">
               <input
                 type="tel"
                 id="phoneNumber"
@@ -193,20 +197,21 @@ const Register = () => {
                 placeholder="Enter your 10-digit phone number"
                 pattern="[0-9]{10}"
               />
+              <span className="input-sprout-underline" />
+              <span className="input-sprout"><InputSprout /></span>
             </div>
 
             <div className="form-group">
               <label>Location *</label>
-              <button type="button" onClick={() => setShowLocationModal(true)} style={{ marginBottom: 8 }}>
+              <NatureButton type="button" onClick={() => setShowLocationModal(true)} style={{ marginBottom: 8 }}>
                 {location.latitude && location.longitude ? 'Change Location' : 'Select Location'}
-              </button>
+              </NatureButton>
               {location.latitude && location.longitude && (
                 <div style={{ color: '#2d7a2d', fontSize: 14, marginBottom: 4 }}>Location selected</div>
               )}
             </div>
 
-            <div className="form-group">
-              <label htmlFor="password">Password *</label>
+            <div className="input-sprout-group">
               <input
                 type="password"
                 id="password"
@@ -217,10 +222,11 @@ const Register = () => {
                 placeholder="Enter your password"
                 minLength="6"
               />
+              <span className="input-sprout-underline" />
+              <span className="input-sprout"><InputSprout /></span>
             </div>
 
-            <div className="form-group">
-              <label htmlFor="confirmPassword">Confirm Password *</label>
+            <div className="input-sprout-group">
               <input
                 type="password"
                 id="confirmPassword"
@@ -231,6 +237,8 @@ const Register = () => {
                 placeholder="Confirm your password"
                 minLength="6"
               />
+              <span className="input-sprout-underline" />
+              <span className="input-sprout"><InputSprout /></span>
             </div>
 
             <div className="form-group">
@@ -264,9 +272,10 @@ const Register = () => {
               </div>
             )}
 
-            <button type="submit" className="register-button" disabled={loading}>
+            {loading && <FormProgressBar progress={100} />}
+            <NatureButton type="submit" className="register-button" disabled={loading}>
               {loading ? 'Registering...' : 'Register'}
-            </button>
+            </NatureButton>
           </form>
         </div>
       </div>
@@ -276,7 +285,7 @@ const Register = () => {
           <div className="bulk-order-modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: 600 }}>
             <div className="bulk-order-modal-header" style={{ background: '#2d7a2d', color: 'white' }}>
               <h2 style={{ fontSize: '1.2rem' }}>Select Location</h2>
-              <button className="close-btn" onClick={() => setShowLocationModal(false)}>&times;</button>
+              <NatureButton className="close-btn" onClick={() => setShowLocationModal(false)}>&times;</NatureButton>
             </div>
             <div className="bulk-order-modal-body">
               <LocationPicker
@@ -286,9 +295,9 @@ const Register = () => {
                 onLocationChange={setLocation}
               />
               <div style={{ textAlign: 'right', marginTop: 16 }}>
-                <button type="button" className="register-button" onClick={() => setShowLocationModal(false)}>
+                <NatureButton type="button" className="register-button" onClick={() => setShowLocationModal(false)}>
                   Done
-                </button>
+                </NatureButton>
               </div>
             </div>
           </div>

@@ -7,6 +7,7 @@ import './MyProducts.css';
 import { productAPI } from '../api/api';
 import noImage from '../assets/Images/no-image.png';
 import GoLiveChatModal from '../components/GoLiveChatModal';
+import NatureButton from '../components/NatureButton';
 
 const BASE_URL = 'https://krishilink.shamir.com.np';
 
@@ -52,6 +53,7 @@ const MyProducts = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [showGoLive, setShowGoLive] = useState(false);
+  const [statusUpdating, setStatusUpdating] = useState({});
 
   useEffect(() => {
     fetchProducts();
@@ -185,6 +187,21 @@ const MyProducts = () => {
     alert(`Go Live for product: ${product.productName}`);
   };
 
+  const handleToggleStatus = async (e, product) => {
+    e.stopPropagation();
+    setStatusUpdating(prev => ({ ...prev, [product.productId]: true }));
+    try {
+      await productAPI.updateProductStatus(product.productId, !product.isActive);
+      setProducts(prevProducts => prevProducts.map(p =>
+        p.productId === product.productId ? { ...p, isActive: !p.isActive } : p
+      ));
+    } catch (err) {
+      alert('Failed to update product status');
+    } finally {
+      setStatusUpdating(prev => ({ ...prev, [product.productId]: false }));
+    }
+  };
+
   if (loading) return <div className="loading-container">Loading...</div>;
   if (error && error.toLowerCase().includes('not found')) {
     return (
@@ -207,6 +224,14 @@ const MyProducts = () => {
   }
   if (error) return <div className="error-container">Error: {error}</div>;
 
+  const sproutSVG = (
+    <svg viewBox="0 0 24 24" fill="none" width="24" height="24">
+      <ellipse cx="12" cy="18" rx="6" ry="4" fill="#A5D6A7" />
+      <path d="M12 18 Q13 10 22 8" stroke="#4CAF50" strokeWidth="2" fill="none" />
+      <ellipse cx="16" cy="10" rx="1.5" ry="2.5" fill="#81C784" />
+    </svg>
+  );
+
   return (
     <div className='dashboard-container'>
       <DashboardNavbar />
@@ -224,9 +249,13 @@ const MyProducts = () => {
             products.map(product => (
               <div 
                 key={product.productId} 
-                className="product-list-item" 
+                className="nature-card product-list-item" 
                 onClick={() => handleProductClick(product.productId)}
               >
+                <span className="sprout-corner top-left">{sproutSVG}</span>
+                <span className="sprout-corner top-right">{sproutSVG}</span>
+                <span className="sprout-corner bottom-left">{sproutSVG}</span>
+                <span className="sprout-corner bottom-right">{sproutSVG}</span>
                 <ProductImage product={product} />
                 <div className="product-details">
                   <h3>{product.productName}</h3>
@@ -240,27 +269,46 @@ const MyProducts = () => {
                   </div>
                   </div>
                   <div className="product-actions">
-                    <button 
+                    <button
+                      className={`status-toggle-btn ${product.isActive ? 'active' : 'inactive'}`}
+                      onClick={e => handleToggleStatus(e, product)}
+                      disabled={statusUpdating[product.productId]}
+                      style={{
+                        marginRight: '1rem',
+                        padding: '0.5rem 1.2rem',
+                        borderRadius: '20px',
+                        border: 'none',
+                        background: product.isActive ? '#43a047' : '#bdbdbd',
+                        color: '#fff',
+                        fontWeight: 600,
+                        cursor: statusUpdating[product.productId] ? 'not-allowed' : 'pointer',
+                        opacity: statusUpdating[product.productId] ? 0.7 : 1,
+                        transition: 'background 0.2s',
+                      }}
+                    >
+                      {statusUpdating[product.productId] ? 'Updating...' : (product.isActive ? 'Active' : 'Inactive')}
+                    </button>
+                    <NatureButton 
                       className="edit-btn"
                       onClick={(e) => handleEditClick(e, product)}
                     >
                       <span role="img" aria-label="edit">✏️</span> Update
-                    </button>
-                    <button 
+                    </NatureButton>
+                    <NatureButton 
                       className="delete-btn"
                       onClick={(e) => handleDeleteClick(e, product.productId)}
                       disabled={isDeleting}
                     >
                       <span role="img" aria-label="delete">🗑️</span> {isDeleting ? 'Deleting...' : 'Delete'}
-                    </button>
-                    <button
+                    </NatureButton>
+                    <NatureButton
                       className="live-chat-btn"
                       onClick={(e) => { e.stopPropagation(); setShowGoLive(true); }}
                       title="Go Live"
                       type="button"
                     >
                       Go Live
-                    </button>
+                    </NatureButton>
                   </div>
               </div>
             ))
@@ -280,8 +328,8 @@ const MyProducts = () => {
               <textarea name="description" value={editFormData.description} onChange={handleInputChange}></textarea>
               <input type="file" name="image" onChange={handleInputChange} />
               <div className="form-actions">
-                <button type="submit" disabled={loading}>Update</button>
-                <button type="button" onClick={() => setIsEditing(false)}>Cancel</button>
+                <NatureButton type="submit" disabled={loading}>Update</NatureButton>
+                <NatureButton type="button" onClick={() => setIsEditing(false)}>Cancel</NatureButton>
               </div>
             </form>
           </div>

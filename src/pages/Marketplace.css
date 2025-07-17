@@ -350,6 +350,25 @@
   background-color: #388e3c;
 }
 
+.status-badge {
+  display: inline-block;
+  padding: 0.18em 0.7em;
+  border-radius: 12px;
+  font-size: 0.85em;
+  font-weight: 600;
+  margin-right: 0.5em;
+  margin-bottom: 0.2em;
+  vertical-align: middle;
+}
+.status-badge.active {
+  background: #43a047;
+  color: #fff;
+}
+.status-badge.inactive {
+  background: #bdbdbd;
+  color: #fff;
+}
+
 @media (max-width: 768px) {
   .marketplace-header {
     flex-direction: column;

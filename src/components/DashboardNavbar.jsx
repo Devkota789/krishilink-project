@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import krishilinkLogo from '../assets/Images/krishilink.jpg';
 import './DashboardNavbar.css';
 import GoLiveChatModal from './GoLiveChatModal';
+import NatureButton from '../components/NatureButton';
 
 const DashboardNavbar = () => {
   const { logout, user } = useAuth();
@@ -30,14 +31,14 @@ const DashboardNavbar = () => {
             <>
               <Link to="/my-products" className="nav-link">My Products</Link>
               <Link to="/add-product" className="nav-link">Add Product</Link>
-              <button
+              <NatureButton
                 className="nav-link go-live-btn"
                 type="button"
                 onClick={() => setShowGoLive(true)}
                 style={{ border: '2px solid #388e3c', background: '#fff', color: '#388e3c', borderRadius: 8, fontWeight: 600, cursor: 'pointer', minWidth: 120, marginLeft: 8 }}
               >
                 Go Live
-              </button>
+              </NatureButton>
             </>
           ) : (
             <>
@@ -48,9 +49,9 @@ const DashboardNavbar = () => {
 
         <div className="navbar-auth">
           <span className="user-role">{user?.role}</span>
-          <button onClick={handleLogout} className="auth-link logout">
+          <NatureButton onClick={handleLogout} className="auth-link logout">
             Logout
-          </button>
+          </NatureButton>
         </div>
       </div>
       <GoLiveChatModal open={showGoLive} onClose={() => setShowGoLive(false)} />

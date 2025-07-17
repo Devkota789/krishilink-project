@@ -3,6 +3,7 @@ import { orderAPI, productAPI } from '../api/api';
 import { useAuth } from '../context/AuthContext';
 import DashboardNavbar from '../components/DashboardNavbar';
 import Footer from '../components/Footer';
+import NatureButton from '../components/NatureButton';
 import { FaBox, FaUser, FaPhone, FaMapMarkerAlt, FaCalendar, FaRupeeSign, FaEye, FaTrash } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import './MyOrders.css';
@@ -158,9 +159,9 @@ const MyOrders = () => {
         <DashboardNavbar />
         <div className="error-container">
           <p>{error}</p>
-          <button onClick={fetchOrders} className="retry-button">
+          <NatureButton onClick={fetchOrders} className="retry-button">
             Retry
-          </button>
+          </NatureButton>
         </div>
         <Footer />
       </div>
@@ -231,45 +232,45 @@ const MyOrders = () => {
                   </div>
 
                   <div className="order-actions">
-                    <button
+                    <NatureButton
                       className="view-details-btn"
                       onClick={() => handleViewOrderDetails(order)}
                     >
                       <FaEye /> View Details
-                    </button>
+                    </NatureButton>
                     
                     {user?.role === 'farmer' && order.orderStatus?.toLowerCase() === 'pending' && (
                       <div className="farmer-actions">
-                        <button
+                        <NatureButton
                           className="accept-btn"
                           onClick={() => handleUpdateOrderStatus(order.orderId, 'confirmed')}
                         >
                           Accept
-                        </button>
-                        <button
+                        </NatureButton>
+                        <NatureButton
                           className="reject-btn"
                           onClick={() => handleUpdateOrderStatus(order.orderId, 'rejected')}
                         >
                           Reject
-                        </button>
+                        </NatureButton>
                       </div>
                     )}
                     
                     {user?.role === 'buyer' && order.orderStatus?.toLowerCase() === 'pending' && (
-                      <button
+                      <NatureButton
                         className="cancel-btn"
                         onClick={() => handleUpdateOrderStatus(order.orderId, 'cancelled')}
                       >
                         Cancel Order
-                      </button>
+                      </NatureButton>
                     )}
                     
-                    <button
+                    <NatureButton
                       className="delete-btn"
                       onClick={() => handleDeleteOrder(order.orderId)}
                     >
                       <FaTrash /> Delete
-                    </button>
+                    </NatureButton>
                   </div>
                 </div>
               </motion.div>
@@ -284,7 +285,7 @@ const MyOrders = () => {
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h2>Order Details - #{selectedOrder.orderId}</h2>
-              <button className="close-btn" onClick={handleCloseOrderDetails}>×</button>
+              <NatureButton className="close-btn" onClick={handleCloseOrderDetails}>×</NatureButton>
             </div>
             
             <div className="modal-body">

@@ -7,6 +7,9 @@ import { productAPI } from '../api/api';
 import './AddProduct.css';
 import LocationPicker from '../components/LocationPicker';
 import '../components/BulkOrderModal.css';
+import NatureButton from '../components/NatureButton';
+import InputSprout from '../components/InputSprout';
+import FormProgressBar from '../components/FormProgressBar';
 
 const AddProduct = () => {
   const navigate = useNavigate();
@@ -168,16 +171,15 @@ const AddProduct = () => {
       
       <div className="add-product-container">
         <div className="button-container">
-          <button className="dashboard-button" onClick={() => navigate('/dashboard')}>
+          <NatureButton className="dashboard-button" onClick={() => navigate('/dashboard')}>
             ← Back to Dashboard
-          </button>
+          </NatureButton>
         </div>
 
         <h1>Add New Product</h1>
 
         <form className="product-form" onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="productName">Product Name *</label>
+          <div className="input-sprout-group">
             <input
               type="text"
               id="productName"
@@ -187,6 +189,8 @@ const AddProduct = () => {
               placeholder="Enter product name"
               required
             />
+            <span className="input-sprout-underline" />
+            <span className="input-sprout"><InputSprout /></span>
           </div>
 
           <div className="form-group">
@@ -210,8 +214,7 @@ const AddProduct = () => {
             )}
           </div>
 
-          <div className="form-group">
-            <label htmlFor="rate">Rate (Price) *</label>
+          <div className="input-sprout-group">
             <input
               type="number"
               id="rate"
@@ -223,10 +226,11 @@ const AddProduct = () => {
               step="0.01"
               required
             />
+            <span className="input-sprout-underline" />
+            <span className="input-sprout"><InputSprout /></span>
           </div>
 
-          <div className="form-group">
-            <label htmlFor="availableQuantity">Available Quantity *</label>
+          <div className="input-sprout-group">
             <input
               type="number"
               id="availableQuantity"
@@ -238,6 +242,8 @@ const AddProduct = () => {
               step="0.01"
               required
             />
+            <span className="input-sprout-underline" />
+            <span className="input-sprout"><InputSprout /></span>
           </div>
 
           <div className="form-group">
@@ -294,9 +300,9 @@ const AddProduct = () => {
 
           <div className="form-group">
             <label>Location *</label>
-            <button type="button" onClick={() => setShowLocationModal(true)} style={{ marginBottom: 8 }}>
+            <NatureButton type="button" onClick={() => setShowLocationModal(true)} style={{ marginBottom: 8 }}>
               {location.latitude && location.longitude ? 'Change Location' : 'Select Location'}
-            </button>
+            </NatureButton>
             {location.latitude && location.longitude && (
               <div style={{ color: '#298129ff', fontSize: 14, marginBottom: 4 }}>Location selected</div>
             )}
@@ -317,9 +323,10 @@ const AddProduct = () => {
           {message.text && (
             <div className={`message ${message.type}`}>{message.text}</div>
           )}
-          <button type="submit" className="submit-button" disabled={loading}>
+          {loading && <FormProgressBar progress={100} />}
+          <NatureButton type="submit" className="submit-button" disabled={loading}>
             {loading ? 'Adding Product...' : 'Add Product'}
-          </button>
+          </NatureButton>
         </form>
       </div>
       {/* Location Picker Modal */}
@@ -328,7 +335,7 @@ const AddProduct = () => {
           <div className="bulk-order-modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: 600 }}>
             <div className="bulk-order-modal-header" style={{ background: '#2d7a2d', color: 'white' }}>
               <h2 style={{ fontSize: '1.2rem' }}>Select Location</h2>
-              <button className="close-btn" onClick={() => setShowLocationModal(false)}>&times;</button>
+              <NatureButton className="close-btn" onClick={() => setShowLocationModal(false)}>&times;</NatureButton>
             </div>
             <div className="bulk-order-modal-body">
               <LocationPicker
@@ -338,9 +345,9 @@ const AddProduct = () => {
                 onLocationChange={setLocation}
               />
               <div style={{ textAlign: 'right', marginTop: 16 }}>
-                <button type="button" className="dashboard-button" onClick={() => setShowLocationModal(false)}>
+                <NatureButton type="button" className="dashboard-button" onClick={() => setShowLocationModal(false)}>
                   Done
-                </button>
+                </NatureButton>
               </div>
             </div>
           </div>

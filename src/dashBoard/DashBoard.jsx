@@ -6,6 +6,7 @@ import DashboardNavbar from '../components/DashboardNavbar';
 import Footer from '../components/Footer';
 import { useAuth } from '../context/AuthContext';
 import './DashBoard.css';
+import NatureButton from '../components/NatureButton';
 
 function CropDetectionTool() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -65,9 +66,9 @@ function CropDetectionTool() {
     }}>
       <h2>🌱 Crop Disease Detection AI</h2>
       <p>Upload a photo of your crop to detect diseases and get solutions.</p>
-      <button onClick={() => fileInputRef.current.click()} style={{ marginBottom: 12 }}>
+      <NatureButton onClick={() => fileInputRef.current.click()} style={{ marginBottom: 12 }}>
         📷 Choose Image
-      </button>
+      </NatureButton>
       <input
         type="file"
         accept="image/*"
@@ -81,9 +82,9 @@ function CropDetectionTool() {
         </div>
       )}
       {selectedFile && (
-        <button onClick={handleDetect} disabled={loading} style={{ marginBottom: 12 }}>
+        <NatureButton onClick={handleDetect} disabled={loading} style={{ marginBottom: 12 }}>
           {loading ? "Detecting..." : "Detect Disease"}
-        </button>
+        </NatureButton>
       )}
       {result && (
         <div style={{
@@ -231,24 +232,24 @@ const DashBoard = () => {
             <div className="quick-actions">
               {user.role === 'farmer' ? (
                 <>
-                  <button onClick={handleAddProduct} className="action-button">
+                  <NatureButton onClick={handleAddProduct} className="action-button">
                     Add New Product
-                  </button>
-                  <button onClick={() => navigate('/my-products')} className="action-button">
+                  </NatureButton>
+                  <NatureButton onClick={() => navigate('/my-products')} className="action-button">
                     View My Products
-                  </button>
-                  <button onClick={() => navigate('/my-orders')} className="action-button">
+                  </NatureButton>
+                  <NatureButton onClick={() => navigate('/my-orders')} className="action-button">
                     View Orders
-                  </button>
+                  </NatureButton>
                 </>
               ) : (
                 <>
-                  <button onClick={handleViewProducts} className="action-button">
+                  <NatureButton onClick={handleViewProducts} className="action-button">
                     Browse Products
-                  </button>
-                  <button onClick={() => navigate('/my-orders')} className="action-button">
+                  </NatureButton>
+                  <NatureButton onClick={() => navigate('/my-orders')} className="action-button">
                     My Orders
-                  </button>
+                  </NatureButton>
                 </>
               )}
             </div>

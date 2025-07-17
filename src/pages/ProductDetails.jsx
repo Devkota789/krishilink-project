@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { FaUser, FaStar, FaRegStar, FaCommentDots, FaShoppingCart, FaShoppingBag, FaMapMarkerAlt, FaSeedling } from 'react-icons/fa';
+import { FaUser, FaStar, FaRegStar, FaCommentDots, FaShoppingCart, FaShoppingBag, FaMapMarkerAlt, FaSeedling, FaComments } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import './ProductDetails.css';
+import { useAuth } from '../context/AuthContext';
+import GoLiveChatModal from '../components/GoLiveChatModal';
 
 const BASE_URL = 'https://krishilink.shamir.com.np';
 
@@ -26,6 +28,10 @@ const ProductDetails = () => {
   const [reviewSubmitting, setReviewSubmitting] = useState(false);
   const [reviewError, setReviewError] = useState('');
   const [reviewSuccess, setReviewSuccess] = useState('');
+
+  const { user } = useAuth();
+  const [showGoLive, setShowGoLive] = useState(false);
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
   useEffect(() => {
     fetchProduct();
@@ -116,6 +122,48 @@ const ProductDetails = () => {
       </div>
     );
   }
+
+  // Typing indicator component for the FAB
+  const TypingDots = () => (
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '32px' }}>
+      <span className="typing-dot" style={{
+        display: 'inline-block',
+        width: '10px',
+        height: '10px',
+        margin: '0 3px',
+        borderRadius: '50%',
+        background: '#fff',
+        animation: 'typing-bounce 1.2s infinite',
+        animationDelay: '0s',
+      }}></span>
+      <span className="typing-dot" style={{
+        display: 'inline-block',
+        width: '10px',
+        height: '10px',
+        margin: '0 3px',
+        borderRadius: '50%',
+        background: '#fff',
+        animation: 'typing-bounce 1.2s infinite',
+        animationDelay: '0.2s',
+      }}></span>
+      <span className="typing-dot" style={{
+        display: 'inline-block',
+        width: '10px',
+        height: '10px',
+        margin: '0 3px',
+        borderRadius: '50%',
+        background: '#fff',
+        animation: 'typing-bounce 1.2s infinite',
+        animationDelay: '0.4s',
+      }}></span>
+      <style>{`
+        @keyframes typing-bounce {
+          0%, 80%, 100% { transform: translateY(0); opacity: 0.7; }
+          40% { transform: translateY(-8px); opacity: 1; }
+        }
+      `}</style>
+    </div>
+  );
 
   return (
     <div>
@@ -254,6 +302,106 @@ const ProductDetails = () => {
         </div>
       </motion.div>
       <Footer />
+      {/* Floating Action Button for Chat - always visible */}
+      <button
+        className="fab-chat"
+        title="Chat with Farmer"
+        onClick={() => {
+          if (user) {
+            setShowGoLive(true);
+          } else {
+            setShowLoginPrompt(true);
+          }
+        }}
+        style={{
+          position: 'fixed',
+          bottom: '32px',
+          right: '32px',
+          zIndex: 1000,
+          background: '#388e3c',
+          color: 'white',
+          border: 'none',
+          borderRadius: '32px',
+          width: 'auto',
+          height: '64px',
+          boxShadow: '0 4px 16px rgba(0,0,0,0.18)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '2rem',
+          cursor: 'pointer',
+          transition: 'background 0.2s',
+          padding: '0 24px',
+          gap: '16px',
+        }}
+      >
+        <TypingDots />
+        <span style={{ fontSize: '1.1rem', fontWeight: 600, letterSpacing: 0.2, color: '#fff', marginLeft: 8 }}>
+          Chat With Farmer
+        </span>
+      </button>
+      {/* Simple login prompt modal */}
+      {showLoginPrompt && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          background: 'rgba(0,0,0,0.4)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 2000
+        }}>
+          <div style={{
+            background: '#fff',
+            borderRadius: '12px',
+            padding: '2rem',
+            boxShadow: '0 4px 24px rgba(0,0,0,0.18)',
+            minWidth: '320px',
+            textAlign: 'center'
+          }}>
+            <h2>Please log in to chat with the farmer</h2>
+            <button
+              style={{
+                marginTop: '1.5rem',
+                background: '#388e3c',
+                color: 'white',
+                border: 'none',
+                borderRadius: '8px',
+                padding: '0.7rem 1.5rem',
+                fontSize: '1.1rem',
+                cursor: 'pointer',
+              }}
+              onClick={() => {
+                setShowLoginPrompt(false);
+                window.location.href = '/login';
+              }}
+            >
+              Go to Login
+            </button>
+            <button
+              style={{
+                marginTop: '1.5rem',
+                marginLeft: '1rem',
+                background: '#eee',
+                color: '#333',
+                border: 'none',
+                borderRadius: '8px',
+                padding: '0.7rem 1.5rem',
+                fontSize: '1.1rem',
+                cursor: 'pointer',
+              }}
+              onClick={() => setShowLoginPrompt(false)}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+      {/* GoLiveChatModal for real-time chat */}
+      <GoLiveChatModal open={showGoLive} onClose={() => setShowGoLive(false)} />
     </div>
   );
 };

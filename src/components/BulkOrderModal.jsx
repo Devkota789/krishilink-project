@@ -3,6 +3,7 @@ import { orderAPI } from '../api/api';
 import { useAuth } from '../context/AuthContext';
 import { FaShoppingCart, FaTimes, FaTrash, FaCheck } from 'react-icons/fa';
 import './BulkOrderModal.css';
+import NatureButton from '../components/NatureButton';
 
 const BulkOrderModal = ({ isOpen, onClose, cartItems, onOrderSuccess, onRemoveItem, onUpdateQuantity }) => {
   const [loading, setLoading] = useState(false);
@@ -96,9 +97,9 @@ const BulkOrderModal = ({ isOpen, onClose, cartItems, onOrderSuccess, onRemoveIt
           <h2>
             <FaShoppingCart /> Shopping Cart ({cartItems.length} items)
           </h2>
-          <button className="close-btn" onClick={handleClose} disabled={loading}>
+          <NatureButton className="close-btn" onClick={handleClose} disabled={loading}>
             <FaTimes />
-          </button>
+          </NatureButton>
         </div>
 
         <div className="bulk-order-modal-body">
@@ -152,13 +153,13 @@ const BulkOrderModal = ({ isOpen, onClose, cartItems, onOrderSuccess, onRemoveIt
                     <div className="item-total">
                       <p>₹{item.price * item.quantity}</p>
                     </div>
-                    <button
+                    <NatureButton
                       className="remove-item-btn"
                       onClick={() => onRemoveItem(index)}
                       disabled={loading}
                     >
                       <FaTrash />
-                    </button>
+                    </NatureButton>
                   </div>
                 ))}
               </div>
@@ -179,13 +180,13 @@ const BulkOrderModal = ({ isOpen, onClose, cartItems, onOrderSuccess, onRemoveIt
               </div>
 
               <div className="cart-actions">
-                <button
+                <NatureButton
                   className="place-order-btn"
                   onClick={handlePlaceBulkOrder}
                   disabled={loading || cartItems.length === 0}
                 >
                   {loading ? 'Placing Orders...' : 'Place All Orders'}
-                </button>
+                </NatureButton>
               </div>
             </>
           )}

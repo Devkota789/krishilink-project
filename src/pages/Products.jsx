@@ -17,6 +17,7 @@ import { motion } from "framer-motion";
 import { useAuth } from "../context/AuthContext";
 import noImage from "../assets/Images/no-image.png";
 import GoLiveChatModal from "../components/GoLiveChatModal";
+import NatureButton from '../components/NatureButton';
 
 const Products = () => {
   const [products, setProducts] = useState([]);
@@ -270,12 +271,24 @@ const Products = () => {
     }
   };
 
+  const sproutSVG = (
+    <svg viewBox="0 0 24 24" fill="none" width="24" height="24">
+      <ellipse cx="12" cy="18" rx="6" ry="4" fill="#A5D6A7" />
+      <path d="M12 18 Q13 10 22 8" stroke="#4CAF50" strokeWidth="2" fill="none" />
+      <ellipse cx="16" cy="10" rx="1.5" ry="2.5" fill="#81C784" />
+    </svg>
+  );
+
   const renderProductCard = (product, isNearby = false) => (
     <motion.div
       key={product.productId}
-      className={`product-card ${isNearby ? "nearby-product" : ""}`}
+      className="nature-card product-card clickable-card"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
       whileHover={{ scale: 1.02 }}
-      transition={{ duration: 0.2 }}
+      onClick={() => handleSeeDetails(product.productId)}
+      style={{ cursor: 'pointer' }}
     >
       <div className="product-image" style={{ position: 'relative' }}>
         <img
@@ -294,7 +307,10 @@ const Products = () => {
         )}
       </div>
       <div className="product-info">
-        <h3>{product.productName}</h3>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5em', marginBottom: '0.2em' }}>
+          <span className={`status-badge ${product.isActive ? 'active' : 'inactive'}`}>{product.isActive ? 'Active' : 'Inactive'}</span>
+          <h3 style={{ margin: 0 }}>{product.productName}</h3>
+        </div>
         {isNearby && product.distance && (
           <div className="distance-info" style={{ color: "#388e3c", fontWeight: 600, marginBottom: 4 }}>
             📍 {typeof product.distance === "string" && product.distance.includes("Km")
@@ -305,55 +321,12 @@ const Products = () => {
         <p className="price">
           ₹{product.rate} per {product.unit || "kg"}
         </p>
-        <p className="description">{product.description}</p>
-        <div className="seller-info">
-          <p>
-            <FaUser /> {product.farmerName}
-          </p>
-          <p>
-            <FaMapMarkerAlt /> {product.city}
-          </p>
-        </div>
-        <div
-          className="product-actions"
-          style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
+        <NatureButton
+          className="order-btn"
+          onClick={e => { e.stopPropagation(); handlePlaceOrder(product); }}
         >
-          <button
-            className="view-details-btn"
-            onClick={() => handleSeeDetails(product.productId)}
-          >
-            View Details
-          </button>
-          <button
-            className="live-chat-btn"
-            onClick={() => setShowGoLive(true)}
-            title="Go Live"
-            type="button"
-          >
-            Go Live
-          </button>
-        </div>
-        {user && user.role === "buyer" && (
-          <div className="order-section">
-            <input
-              type="number"
-              min="1"
-              max={product.availableQuantity}
-              value={orderQuantity[product.productId] || ""}
-              onChange={(e) =>
-                handleQuantityChange(product.productId, e.target.value)
-              }
-              placeholder="Quantity"
-              className="quantity-input"
-            />
-            <button
-              className="order-btn"
-              onClick={() => handlePlaceOrder(product)}
-            >
-              <FaShoppingCart /> Order
-            </button>
-          </div>
-        )}
+          <FaShoppingCart /> Add to Cart
+        </NatureButton>
       </div>
     </motion.div>
   );
@@ -407,9 +380,9 @@ const Products = () => {
         <Navbar />
         <div className="error-container">
           <p>{error}</p>
-          <button onClick={fetchProducts} className="retry-button">
+          <NatureButton onClick={fetchProducts} className="retry-button">
             Retry
-          </button>
+          </NatureButton>
         </div>
         <Footer />
       </div>
@@ -464,17 +437,12 @@ const Products = () => {
             {products.length > 0 && (
               <div className="all-products-section">
                 <h2 className="section-title">
-                  🌾 All Products ({products.length})
+                  🌾 All Products ({products.filter(product => product.isActive).length})
                 </h2>
                 <div className="products-grid">
                   {products
-                    .filter(
-                      (product) =>
-                        !nearbyProducts.find(
-                          (nearby) => nearby.productId === product.productId
-                        )
-                    )
-                    .map((product) => renderProductCard(product, false))}
+                    .filter(product => product.isActive && !nearbyProducts.find(nearby => nearby.productId === product.productId))
+                    .map(product => renderProductCard(product, false))}
                 </div>
               </div>
             )}
