@@ -20,7 +20,7 @@ const Marketplace = () => {
   const [orderMessage, setOrderMessage] = useState({ text: '', type: '' });
   const { user } = useAuth();
   const navigate = useNavigate();
-  const BASE_URL = 'https://krishilink.shamir.com.np';
+  const BASE_URL = 'https://w1vqqn7ucvzpndp9xsvdkd15gzcedswvilahs3agd6b3dljo7tg24pbklk4u.shamir.com.np';
 
   useEffect(() => {
     fetchProducts();

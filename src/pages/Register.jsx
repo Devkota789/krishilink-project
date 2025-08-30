@@ -114,8 +114,15 @@ const Register = () => {
       if (formData.image) formDataToSend.append('Image', formData.image);
 
       const response = await authAPI.registerUser(formDataToSend);
+      if (!response.success) {
+        const errDetails = Array.isArray(response.errorDetails) ? response.errorDetails.join(' ') : '';
+        const msg = response.error || errDetails || 'Registration failed. Please try a different email/phone.';
+        setMessage({ text: msg, type: 'error' });
+        setLoading(false);
+        return;
+      }
 
-      setMessage({ text: 'Registration successful! Please login.', type: 'success' });
+      setMessage({ text: response.message || 'Registration successful! Please login.', type: 'success' });
       // Reset form
       setFormData({
         fullName: '',
@@ -252,6 +259,8 @@ const Register = () => {
               >
                 <option value="farmer">Farmer</option>
                 <option value="buyer">Buyer</option>
+                <option value="admin">Admin</option>
+                
               </select>
             </div>
 

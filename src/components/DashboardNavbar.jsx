@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import krishilinkLogo from '../assets/Images/krishilink.jpg';
 import './DashboardNavbar.css';
@@ -9,7 +9,10 @@ import NatureButton from '../components/NatureButton';
 const DashboardNavbar = () => {
   const { logout, user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [showGoLive, setShowGoLive] = useState(false);
+
+  const isAdminPage = location.pathname.startsWith('/admin');
 
   const handleLogout = () => {
     logout();
@@ -26,7 +29,12 @@ const DashboardNavbar = () => {
         </div>
 
         <div className="navbar-links">
-          <Link to="/dashboard" className="nav-link">Dashboard</Link>
+          {!isAdminPage && (
+            <Link to="/dashboard" className="nav-link">Dashboard</Link>
+          )}
+          {user?.role === 'admin' && (
+            <Link to="/admin" className="nav-link admin-link">Admin Panel</Link>
+          )}
           {user?.role === 'farmer' ? (
             <>
               <Link to="/my-products" className="nav-link">My Products</Link>
@@ -42,7 +50,9 @@ const DashboardNavbar = () => {
             </>
           ) : (
             <>
-              <Link to="/marketplace" className="nav-link">Marketplace</Link>
+              {!isAdminPage && (
+                <Link to="/marketplace" className="nav-link">Marketplace</Link>
+              )}
             </>
           )}
         </div>

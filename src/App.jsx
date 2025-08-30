@@ -10,6 +10,7 @@ import WhyUs from './pages/WhyUs';
 import { AuthProvider } from './context/AuthContext';
 import ProductDetails from './pages/ProductDetails';
 import Dashboard from './DashBoard/DashBoard'; // Fixed import
+import AdminPanel from './pages/AdminPanel';
 import AddProduct from './pages/AddProduct';
 import MyProducts from './pages/MyProducts';
 import MyOrders from './pages/MyOrders';
@@ -34,6 +35,7 @@ function App() {
             <Route path="/join" element={<Register />} />
             <Route path="/products/:productId" element={<ProductDetails />} />
             <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+            <Route path="/admin" element={<PrivateRoute><AdminPanel /></PrivateRoute>} />
             <Route path="/add-product" element={<PrivateRoute><AddProduct /></PrivateRoute>} />
             <Route path="/my-products" element={<PrivateRoute><MyProducts /></PrivateRoute>} />
             <Route path="/my-orders" element={<PrivateRoute><MyOrders /></PrivateRoute>} />

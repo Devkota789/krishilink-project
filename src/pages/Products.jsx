@@ -30,7 +30,7 @@ const Products = () => {
   const [showGoLive, setShowGoLive] = useState(false);
   const [userLocation, setUserLocation] = useState(null);
   const [nearbyProductsLoaded, setNearbyProductsLoaded] = useState(false);
-  const BASE_URL = "https://krishilink.shamir.com.np";
+  const BASE_URL = "https://w1vqqn7ucvzpndp9xsvdkd15gzcedswvilahs3agd6b3dljo7tg24pbklk4u.shamir.com.np";
   const navigate = useNavigate();
   const { user } = useAuth();
 

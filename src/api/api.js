@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { handleApiResponse } from './handleApiResponse';
 
-const BASE_URL = 'https://krishilink.shamir.com.np';
+const BASE_URL = 'https://w1vqqn7ucvzpndp9xsvdkd15gzcedswvilahs3agd6b3dljo7tg24pbklk4u.shamir.com.np';
 
 // Create axios instance with base URL
 const api = axios.create({
@@ -248,6 +248,83 @@ export const reviewAPI = {
 
 // User API endpoints
 export const userAPI = {
+  getAllUsers: async () => {
+  try {
+    const response = await api.get('/api/User/GetAllUsers');
+    return handleApiResponse(response);
+  } catch (err) {
+    if (err.response && err.response.data) {
+      return handleApiResponse(err.response);
+    }
+    return { success: false, error: 'Network error', errorDetails: [] };
+  }
+  },
+  getAllFarmers: async () => {
+    try {
+      const response = await api.get('/api/User/GetAllFarmers');
+      return handleApiResponse(response);
+    } catch (err) {
+      if (err.response && err.response.data) {
+        return handleApiResponse(err.response);
+      }
+      return { success: false, error: 'Network error', errorDetails: [] };
+    }
+  },
+  getAllBuyers: async () => {
+    try {
+      const response = await api.get('/api/User/GetAllBuyers');
+      return handleApiResponse(response);
+    } catch (err) {
+      if (err.response && err.response.data) {
+        return handleApiResponse(err.response);
+      }
+      return { success: false, error: 'Network error', errorDetails: [] };
+    }
+  },
+  getAllActiveUsers: async () => {
+    try {
+      const response = await api.get('/api/User/GetAllActiveUsers');
+      return handleApiResponse(response);
+    } catch (err) {
+      if (err.response && err.response.data) {
+        return handleApiResponse(err.response);
+      }
+      return { success: false, error: 'Network error', errorDetails: [] };
+    }
+  },
+  getUserDetailsById: async (userId) => {
+    try {
+      const response = await api.get('/api/User/GetUserDetailsById', { params: { userId } });
+      return handleApiResponse(response);
+    } catch (err) {
+      if (err.response && err.response.data) {
+        return handleApiResponse(err.response);
+      }
+      return { success: false, error: 'Network error', errorDetails: [] };
+    }
+  },
+  getUserDetailsByPhoneNumber: async (phoneNumber) => {
+    try {
+      const response = await api.get('/api/User/GetUserDetailsByPhoneNumber', { params: { phoneNumber } });
+      return handleApiResponse(response);
+    } catch (err) {
+      if (err.response && err.response.data) {
+        return handleApiResponse(err.response);
+      }
+      return { success: false, error: 'Network error', errorDetails: [] };
+    }
+  },
+  getUserDetailsByEmail: async (email) => {
+    try {
+      const response = await api.get('/api/User/GetUserDetailsByEmail', { params: { email } });
+      return handleApiResponse(response);
+    } catch (err) {
+      if (err.response && err.response.data) {
+        return handleApiResponse(err.response);
+      }
+      return { success: false, error: 'Network error', errorDetails: [] };
+    }
+  },
   getMyDetails: () => api.get('/api/User/GetMyDetails'),
   getUserImage: () => api.get('/api/User/getUserImage'),
   updateProfile: (profileData) => api.put('/api/User/UpdateProfile', profileData),

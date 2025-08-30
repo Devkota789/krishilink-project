@@ -60,6 +60,21 @@
   color: #2E7D32;
 }
 
+.admin-link {
+  background: linear-gradient(135deg, #ff6b35, #f7931e);
+  color: white !important;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.admin-link:hover {
+  background: linear-gradient(135deg, #e55a2b, #e0851a);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+}
+
 .navbar-auth {
   display: flex;
   align-items: center;

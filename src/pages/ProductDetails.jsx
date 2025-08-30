@@ -8,7 +8,7 @@ import './ProductDetails.css';
 import { useAuth } from '../context/AuthContext';
 import GoLiveChatModal from '../components/GoLiveChatModal';
 
-const BASE_URL = 'https://krishilink.shamir.com.np';
+const BASE_URL = 'https://w1vqqn7ucvzpndp9xsvdkd15gzcedswvilahs3agd6b3dljo7tg24pbklk4u.shamir.com.np';
 
 const ProductDetails = () => {
   const { productId } = useParams();
