@@ -239,12 +239,7 @@ export const orderAPI = {
   deleteOrder: (orderId) => api.delete(`/api/Order/deleteOrder/${orderId}`),
 };
 
-// Review API endpoints
-export const reviewAPI = {
-  addReview: (reviewData) => api.post('/api/Review/AddReview', reviewData),
-  getProductReviews: (productId) => api.get(`/api/Review/getProductReviews/${productId}`),
-  deleteReview: (reviewId) => api.delete(`/api/Review/DeleteReview/${reviewId}`),
-};
+
 
 // User API endpoints
 export const userAPI = {
@@ -328,8 +323,28 @@ export const userAPI = {
   getMyDetails: () => api.get('/api/User/GetMyDetails'),
   getUserImage: () => api.get('/api/User/getUserImage'),
   updateProfile: (profileData) => api.put('/api/User/UpdateProfile', profileData),
-  updateStatus: (statusData) => api.put('/api/User/updateStatus', statusData),
-  deleteUser: (userId) => api.delete(`/api/User/Delete/${userId}`),
+  updateStatus: async (statusData) => {
+    try {
+      const response = await api.put('/api/User/updateStatus', statusData);
+      return handleApiResponse(response);
+    } catch (err) {
+      if (err.response && err.response.data) {
+        return handleApiResponse(err.response);
+      }
+      return { success: false, error: 'Network error', errorDetails: [] };
+    }
+  },
+  deleteUser: async (userId) => {
+    try {
+      const response = await api.delete(`/api/User/Delete/${userId}`);
+      return handleApiResponse(response);
+    } catch (err) {
+      if (err.response && err.response.data) {
+        return handleApiResponse(err.response);
+      }
+      return { success: false, error: 'Network error', errorDetails: [] };
+    }
+  },
 };
 
 // Utility function to clear all authentication data

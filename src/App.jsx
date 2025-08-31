@@ -17,6 +17,7 @@ import MyOrders from './pages/MyOrders';
 import PrivateRoute from './components/PrivateRoute';
 import Marketplace from './pages/Marketplace';
 import LeafCursor from "./components/LeafCursor";
+import MarketplaceProductDetails from './pages/MarketplaceProductDetails';
 
 
 function App() {
@@ -36,10 +37,12 @@ function App() {
             <Route path="/products/:productId" element={<ProductDetails />} />
             <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
             <Route path="/admin" element={<PrivateRoute><AdminPanel /></PrivateRoute>} />
+            <Route path="/admin-dashboard" element={<PrivateRoute><AdminPanel /></PrivateRoute>} />
             <Route path="/add-product" element={<PrivateRoute><AddProduct /></PrivateRoute>} />
             <Route path="/my-products" element={<PrivateRoute><MyProducts /></PrivateRoute>} />
             <Route path="/my-orders" element={<PrivateRoute><MyOrders /></PrivateRoute>} />
             <Route path="/marketplace" element={<PrivateRoute><Marketplace /></PrivateRoute>} />
+            <Route path="/marketplace-product/:productId" element={<PrivateRoute><MarketplaceProductDetails /></PrivateRoute>} />
             {/* Fallback route for 404 Not Found */}
             <Route path="*" element={<div>Page Not Found</div>} />
           </Routes>

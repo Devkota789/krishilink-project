@@ -123,8 +123,13 @@ const Login = () => {
       if (result.success) {
         setMessage({ text: 'Login successful! Redirecting...', type: 'success' });
         
-
-        navigate('/dashboard', { replace: true });
+        // Redirect based on user role
+        const userData = JSON.parse(localStorage.getItem('user') || '{}');
+        if (userData.role === 'admin') {
+          navigate('/admin', { replace: true });
+        } else {
+          navigate('/dashboard', { replace: true });
+        }
       } else {
         setMessage({ text: result.error || 'Login failed', type: 'error' });
       }
@@ -196,7 +201,13 @@ const Login = () => {
 
       if (result.success) {
         setMessage({ text: 'Login successful! Redirecting...', type: 'success' });
-        navigate('/dashboard', { replace: true });
+        // Redirect based on user role
+        const userData = JSON.parse(localStorage.getItem('user') || '{}');
+        if (userData.role === 'admin') {
+          navigate('/admin', { replace: true });
+        } else {
+          navigate('/dashboard', { replace: true });
+        }
       } else {
         // Show all error details if present
         let errorMsg = result.error || 'Invalid OTP';

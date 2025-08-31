@@ -35,7 +35,7 @@ function CropDetectionTool() {
     const formData = new FormData();
     formData.append("cropImage", selectedFile);
     try {
-      const response = await fetch("https://krishilink.shamir.com.np/api/AI/detectDisease", {
+      const response = await fetch("https://w1vqqn7ucvzpndp9xsvdkd15gzcedswvilahs3agd6b3dljo7tg24pbklk4u.shamir.com.np/api/AI/detectDisease", {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -137,7 +137,7 @@ const DashBoard = () => {
     setAiLoading(true);
     try {
       const token = localStorage.getItem('authToken');
-      const res = await fetch("https://krishilink.shamir.com.np/api/AI/chatWithAI", {
+      const res = await fetch("https://w1vqqn7ucvzpndp9xsvdkd15gzcedswvilahs3agd6b3dljo7tg24pbklk4u.shamir.com.np/api/AI/chatWithAI", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -155,6 +155,12 @@ const DashBoard = () => {
 
   if (loading) return <div className="dashboard-loading">Loading...</div>;
   if (!user) return <div className="dashboard-unauthorized">Not authorized</div>;
+  
+  // Redirect admins to admin panel
+  if (user.role === 'admin') {
+    navigate('/admin');
+    return null;
+  }
 
   return (
     <div className="dashboard-page">
@@ -290,23 +296,41 @@ const DashBoard = () => {
                     <p style={{ color: '#e8f5e9', margin: 0, fontSize: 15 }}>Ask anything about farming, crops, or your products!</p>
                   </div>
                 </div>
-                <button
-                  onClick={() => setChatOpen(false)}
-                  style={{
-                    background: '#fff',
-                    border: 'none',
-                    borderRadius: '50%',
-                    width: 44,
-                    height: 44,
-                    fontSize: 26,
-                    color: '#388e3c',
-                    boxShadow: '0 2px 8px #388e3c22',
-                    cursor: 'pointer',
-                  }}
-                  title="Close"
-                >
-                  ×
-                </button>
+                                 <button
+                   onClick={() => setChatOpen(false)}
+                   style={{
+                     background: 'rgba(255, 255, 255, 0.9)',
+                     border: '2px solidrgb(142, 56, 77)',
+                     borderRadius: '50%',
+                     width: 48,
+                     height: 48,
+                     fontSize: 24,
+                     fontWeight: 'bold',
+                     color: '#388e3c',
+                     boxShadow: '0 4px 12px rgba(56, 142, 60, 0.2)',
+                     cursor: 'pointer',
+                     transition: 'all 0.2s ease',
+                     display: 'flex',
+                     alignItems: 'center',
+                     justifyContent: 'center',
+                     outline: 'none',
+                   }}
+                   onMouseEnter={(e) => {
+                     e.target.style.background = '#388e3c';
+                     e.target.style.color = '#fff';
+                     e.target.style.transform = 'scale(1.1)';
+                     e.target.style.boxShadow = '0 6px 16px rgba(248, 22, 22, 0.47)';
+                   }}
+                   onMouseLeave={(e) => {
+                     e.target.style.background = 'rgba(255, 255, 255, 0.9)';
+                     e.target.style.color = 'red';
+                     e.target.style.transform = 'scale(1)';
+                     e.target.style.boxShadow = '0 4px 12px rgba(56, 142, 60, 0.2)';
+                   }}
+                   title="Close Chat"
+                 >
+                   ✕
+                 </button>
               </div>
               <div style={{ flex: 1, overflowY: 'auto', padding: '2rem 0', background: '#f7fafc' }}>
                 <div style={{ maxWidth: 700, margin: '0 auto' }}>

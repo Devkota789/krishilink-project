@@ -15,7 +15,7 @@ const MyOrders = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showOrderDetails, setShowOrderDetails] = useState(false);
   const { user } = useAuth();
-  const BASE_URL = 'https://krishilink.shamir.com.np';
+  const BASE_URL = 'https://w1vqqn7ucvzpndp9xsvdkd15gzcedswvilahs3agd6b3dljo7tg24pbklk4u.shamir.com.np';
 
   useEffect(() => {
     fetchOrders();

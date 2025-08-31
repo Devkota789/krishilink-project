@@ -8,29 +8,34 @@
   max-width: 1400px;
   margin: 0 auto;
   padding: 2rem;
+  padding-top: 6rem; /* Add top padding to account for fixed navbar */
 }
 
 .admin-header {
   text-align: center;
   margin-bottom: 3rem;
-  background: linear-gradient(135deg, #4caf50 0%, #81c784 100%);
-  padding: 2rem;
+  background: linear-gradient(135deg, #2e7d32 0%, #4caf50 100%);
+  padding: 1.5rem 2rem;
   border-radius: 20px;
   color: white;
-  box-shadow: 0 8px 32px rgba(76, 175, 80, 0.3);
+  box-shadow: 0 12px 40px rgba(46, 125, 50, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.1);
 }
 
 .admin-title {
-  font-size: 3rem;
-  font-weight: 700;
-  margin: 0 0 0.5rem 0;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin: 0 0 0.2rem 0;
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  letter-spacing: -0.02em;
 }
 
 .admin-subtitle {
-  font-size: 1.2rem;
+  font-size: 1rem;
   margin: 0;
-  opacity: 0.9;
+  opacity: 0.95;
+  font-weight: 500;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 /* Admin Tabs */
@@ -174,6 +179,14 @@
   display: flex;
   gap: 1rem;
   align-items: center;
+  justify-content: flex-end;
+}
+
+.filter-group {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-left: auto;
 }
 
 .search-input {
@@ -794,6 +807,7 @@
 @media (max-width: 768px) {
   .admin-container {
     padding: 1rem;
+    padding-top: 5rem; /* Adjust top padding for mobile */
   }
   
   .admin-title {
@@ -852,12 +866,22 @@
 }
 
 @media (max-width: 480px) {
+  .admin-container {
+    padding-top: 4.5rem; /* Further adjust for very small screens */
+  }
+  
   .admin-header {
-    padding: 1.5rem;
+    padding: 2rem 1rem;
+    margin-bottom: 2rem;
   }
   
   .admin-title {
-    font-size: 1.8rem;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .admin-subtitle {
+    font-size: 1.1rem;
   }
   
   .stat-number {

@@ -4,9 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import NatureButton from '../components/NatureButton';
 import './GoLiveChatModal.css';
 
-const SIGNALR_URL = 'https://krishilink.shamir.com.np/chatHub';
-const LOGIN_URL = 'https://krishilink.shamir.com.np/api/KrishilinkAuth/passwordLogin';
-const HISTORY_URL = 'https://krishilink.shamir.com.np/api/Chat/getChatHistory/';
+const SIGNALR_URL = 'https://w1vqqn7ucvzpndp9xsvdkd15gzcedswvilahs3agd6b3dljo7tg24pbklk4u.shamir.com.np/chatHub';
+const LOGIN_URL = 'https://w1vqqn7ucvzpndp9xsvdkd15gzcedswvilahs3agd6b3dljo7tg24pbklk4u.shamir.com.np/api/KrishilinkAuth/passwordLogin';
+const HISTORY_URL = 'https://w1vqqn7ucvzpndp9xsvdkd15gzcedswvilahs3agd6b3dljo7tg24pbklk4u.shamir.com.np/api/Chat/getChatHistory/';
 
 function getInitials(name) {
   if (!name) return '';

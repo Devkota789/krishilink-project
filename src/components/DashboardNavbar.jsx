@@ -29,29 +29,34 @@ const DashboardNavbar = () => {
         </div>
 
         <div className="navbar-links">
-          {!isAdminPage && (
-            <Link to="/dashboard" className="nav-link">Dashboard</Link>
-          )}
-          {user?.role === 'admin' && (
-            <Link to="/admin" className="nav-link admin-link">Admin Panel</Link>
-          )}
-          {user?.role === 'farmer' ? (
+          {user?.role === 'admin' ? (
             <>
-              <Link to="/my-products" className="nav-link">My Products</Link>
-              <Link to="/add-product" className="nav-link">Add Product</Link>
-              <NatureButton
-                className="nav-link go-live-btn"
-                type="button"
-                onClick={() => setShowGoLive(true)}
-                style={{ border: '2px solid #388e3c', background: '#fff', color: '#388e3c', borderRadius: 8, fontWeight: 600, cursor: 'pointer', minWidth: 120, marginLeft: 8 }}
-              >
-                Go Live
-              </NatureButton>
+              <Link to="/admin" className="nav-link admin-link">Admin Panel</Link>
             </>
           ) : (
             <>
               {!isAdminPage && (
-                <Link to="/marketplace" className="nav-link">Marketplace</Link>
+                <Link to="/dashboard" className="nav-link">Dashboard</Link>
+              )}
+              {user?.role === 'farmer' ? (
+                <>
+                  <Link to="/my-products" className="nav-link">My Products</Link>
+                  <Link to="/add-product" className="nav-link">Add Product</Link>
+                  <NatureButton
+                    className="nav-link go-live-btn"
+                    type="button"
+                    onClick={() => setShowGoLive(true)}
+                    style={{ border: '2px solid #388e3c', background: '#fff', color: '#388e3c', borderRadius: 8, fontWeight: 600, cursor: 'pointer', minWidth: 120, marginLeft: 8 }}
+                  >
+                    Go Live
+                  </NatureButton>
+                </>
+              ) : (
+                <>
+                  {!isAdminPage && (
+                    <Link to="/marketplace" className="nav-link">Marketplace</Link>
+                  )}
+                </>
               )}
             </>
           )}

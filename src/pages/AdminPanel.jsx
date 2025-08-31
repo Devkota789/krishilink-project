@@ -140,20 +140,41 @@ const AdminPanel = () => {
     try {
       switch (action) {
         case 'activate':
-          // await userAPI.updateStatus({ userId, status: 'active' });
+          const activateResult = await userAPI.updateStatus({ userId, status: true });
+          if (activateResult.success) {
+            alert('User activated successfully!');
+            await loadUsers();
+          } else {
+            alert(`Failed to activate user: ${activateResult.error || 'Unknown error'}`);
+          }
           break;
         case 'deactivate':
-          // await userAPI.updateStatus({ userId, status: 'inactive' });
+          const deactivateResult = await userAPI.updateStatus({ userId, status: false });
+          if (deactivateResult.success) {
+            alert('User deactivated successfully!');
+            await loadUsers();
+          } else {
+            alert(`Failed to deactivate user: ${deactivateResult.error || 'Unknown error'}`);
+          }
           break;
         case 'delete':
-          // await userAPI.deleteUser(userId);
+          if (!window.confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+            return;
+          }
+          const result = await userAPI.deleteUser(userId);
+          if (result.success) {
+            alert('User deleted successfully!');
+            await loadUsers();
+          } else {
+            alert(`Failed to delete user: ${result.error || 'Unknown error'}`);
+          }
           break;
         default:
           break;
       }
-      await loadUsers();
     } catch (error) {
       console.error(`Error ${action} user:`, error);
+      alert(`Error ${action} user: ${error.message || 'Unknown error'}`);
     }
   };
 
@@ -331,12 +352,12 @@ const AdminPanel = () => {
               <div className="section-header">
                 <h2>User Management</h2>
                 <div className="search-filter">
-                  <div className="filter-group">
-                    <button className={`admin-tab ${userScope === 'all' ? 'active' : ''}`} onClick={() => { setUserScope('all'); loadUsers(); }}>All</button>
-                    <button className={`admin-tab ${userScope === 'farmers' ? 'active' : ''}`} onClick={() => { setUserScope('farmers'); loadUsers(); }}>Farmers</button>
-                    <button className={`admin-tab ${userScope === 'buyers' ? 'active' : ''}`} onClick={() => { setUserScope('buyers'); loadUsers(); }}>Buyers</button>
-                    <button className={`admin-tab ${userScope === 'active' ? 'active' : ''}`} onClick={() => { setUserScope('active'); loadUsers(); }}>Active</button>
-                  </div>
+                                     <div className="filter-group">
+                     <button className={`admin-tab ${userScope === 'all' ? 'active' : ''}`} onClick={() => { setUserScope('all'); loadUsers(); }}>All</button>
+                     <button className={`admin-tab ${userScope === 'farmers' ? 'active' : ''}`} onClick={() => { setUserScope('farmers'); loadUsers(); }}>Farmers</button>
+                     <button className={`admin-tab ${userScope === 'buyers' ? 'active' : ''}`} onClick={() => { setUserScope('buyers'); loadUsers(); }}>Buyers</button>
+                     <button className={`admin-tab ${userScope === 'active' ? 'active' : ''}`} onClick={() => { setUserScope('active'); loadUsers(); }}>Active</button>
+                   </div>
                   <input
                     type="text"
                     placeholder="Search users..."
@@ -349,59 +370,53 @@ const AdminPanel = () => {
               
               <div className="users-table">
                 <table>
-                  <thead>
-                    <tr>
-                      <th>ID</th>
-                      <th>Name</th>
-                      <th>Email</th>
-                      <th>Role</th>
-                      <th>Status</th>
-                      <th>Join Date</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
+                                     <thead>
+                     <tr>
+                       <th>ID</th>
+                       <th>Name</th>
+                       <th>Email</th>
+                       <th>Status</th>
+                       <th>Join Date</th>
+                       <th>Actions</th>
+                     </tr>
+                   </thead>
                   <tbody>
-                    {filteredUsers.map(user => (
-                      <tr key={user.id}>
-                        <td>{user.id}</td>
-                        <td>{user.fullName}</td>
-                        <td>{user.email}</td>
-                        <td>
-                          <span className={`role-badge ${user.role}`}>
-                            {user.role}
-                          </span>
-                        </td>
-                        <td>
-                          <span className={`status-badge ${user.status}`}>
-                            {user.status}
-                          </span>
-                        </td>
-                        <td>{user.joinDate}</td>
-                        <td className="action-buttons">
-                          {user.status === 'active' ? (
-                            <button 
-                              onClick={() => handleUserAction(user.id, 'deactivate')}
-                              className="btn-deactivate"
-                            >
-                              Deactivate
-                            </button>
-                          ) : (
-                            <button 
-                              onClick={() => handleUserAction(user.id, 'activate')}
-                              className="btn-activate"
-                            >
-                              Activate
-                            </button>
-                          )}
-                          <button 
-                            onClick={() => handleUserAction(user.id, 'delete')}
-                            className="btn-delete"
-                          >
-                            Delete
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
+                                         {filteredUsers.map(user => (
+                       <tr key={user.id}>
+                         <td>{user.id}</td>
+                         <td>{user.fullName}</td>
+                         <td>{user.email}</td>
+                         <td>
+                           <span className={`status-badge ${user.status}`}>
+                             {user.status}
+                           </span>
+                         </td>
+                         <td>{user.joinDate}</td>
+                         <td className="action-buttons">
+                           {user.status === 'active' ? (
+                             <button 
+                               onClick={() => handleUserAction(user.id, 'deactivate')}
+                               className="btn-deactivate"
+                             >
+                               Deactivate
+                             </button>
+                           ) : (
+                             <button 
+                               onClick={() => handleUserAction(user.id, 'activate')}
+                               className="btn-activate"
+                             >
+                               Activate
+                             </button>
+                           )}
+                           <button 
+                             onClick={() => handleUserAction(user.id, 'delete')}
+                             className="btn-delete"
+                           >
+                             Delete
+                           </button>
+                         </td>
+                       </tr>
+                     ))}
                   </tbody>
                 </table>
               </div>

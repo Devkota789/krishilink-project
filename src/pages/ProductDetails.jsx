@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { FaUser, FaStar, FaRegStar, FaCommentDots, FaShoppingCart, FaShoppingBag, FaMapMarkerAlt, FaSeedling, FaComments } from 'react-icons/fa';
+import { FaUser, FaShoppingCart, FaShoppingBag, FaMapMarkerAlt, FaSeedling } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import './ProductDetails.css';
 import { useAuth } from '../context/AuthContext';
@@ -14,30 +14,54 @@ const ProductDetails = () => {
   const { productId } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
-  const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [reviewsLoading, setReviewsLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  // Review form state
-  const [reviewForm, setReviewForm] = useState({
-    name: '',
-    rating: 5,
-    comment: '',
-  });
-  const [reviewSubmitting, setReviewSubmitting] = useState(false);
-  const [reviewError, setReviewError] = useState('');
-  const [reviewSuccess, setReviewSuccess] = useState('');
 
   const { user } = useAuth();
   const [showGoLive, setShowGoLive] = useState(false);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
+  // Check if user is properly authenticated
+  const isAuthenticated = user && localStorage.getItem('authToken');
+
+  // Debug logging
+  console.log('User object:', user);
+  console.log('Auth token:', localStorage.getItem('authToken'));
+  console.log('Is authenticated:', isAuthenticated);
+
+  // Validate authentication state
+  const validateAuth = () => {
+    const token = localStorage.getItem('authToken');
+    const userData = localStorage.getItem('user');
+    
+    // If no token but user data exists, clear the user data
+    if (!token && userData) {
+      localStorage.removeItem('user');
+      console.log('Cleared invalid user data - no token found');
+      return false;
+    }
+    
+    // If token exists but no user data, clear the token
+    if (token && !userData) {
+      localStorage.removeItem('authToken');
+      console.log('Cleared invalid token - no user data found');
+      return false;
+    }
+    
+    return !!(token && userData);
+  };
+
+  const isValidAuth = validateAuth();
+
   useEffect(() => {
     fetchProduct();
-    fetchReviews();
     // eslint-disable-next-line
   }, [productId]);
+
+  // Validate authentication on component mount
+  useEffect(() => {
+    validateAuth();
+  }, []);
 
   const fetchProduct = async () => {
     try {
@@ -57,49 +81,26 @@ const ProductDetails = () => {
     }
   };
 
-  const fetchReviews = async () => {
-    try {
-      // For now, we'll use a placeholder empty array since the reviews endpoint is not implemented yet
-      setReviews([]);
-      setReviewsLoading(false);
-      
-      // Uncomment this when the reviews endpoint is implemented
-      /*
-      const response = await fetch(`${BASE_URL}/api/Krishilink/getProductReviews/${productId}`);
-      if (!response.ok) throw new Error('Failed to fetch reviews');
-      const data = await response.json();
-      setReviews(data);
-      */
-    } catch (err) {
-      console.log('Reviews not available yet:', err);
-      setReviews([]);
-      setReviewsLoading(false);
+
+
+  const handleBuy = () => {
+    if (!isAuthenticated) {
+      navigate('/login');
+    } else {
+      alert('Proceed to buy!');
     }
   };
 
-  const handleBuy = () => {
-    alert('Proceed to buy!');
-  };
-
   const handleAddToCart = () => {
-    alert('Added to cart!');
+    if (!isAuthenticated) {
+      navigate('/login');
+    } else {
+      alert('Added to cart!');
+    }
   };
 
-  // Handle review form input
-  const handleReviewChange = (e) => {
-    const { name, value } = e.target;
-    setReviewForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
 
-  // Handle review form submit - Updated to show proper message
-  const handleReviewSubmit = async (e) => {
-    e.preventDefault();
-    setReviewError('Reviews feature coming soon! Please check back later.');
-    setTimeout(() => setReviewError(''), 3000);
-  };
+
 
   if (loading) {
     return (
@@ -234,71 +235,6 @@ const ProductDetails = () => {
         <div className="product-details-description">
           <h2>Description</h2>
           <p>{product.description || 'No description available.'}</p>
-        </div>
-        <div className="product-details-reviews">
-          <h2>
-            <FaCommentDots style={{ color: '#388e3c', marginRight: '0.5rem', verticalAlign: 'middle' }} />
-            Reviews
-          </h2>
-          <div className="reviews-list">
-            {reviewsLoading ? (
-              <p>Loading reviews...</p>
-            ) : (
-              <p className="reviews-coming-soon">
-                Reviews feature is coming soon! Stay tuned for updates.
-              </p>
-            )}
-          </div>
-          
-          {/* Review Form */}
-          <div className="review-form-section">
-            <h3>
-              <FaCommentDots style={{ color: '#388e3c', marginRight: '0.4rem', verticalAlign: 'middle' }} />
-              Add a Review
-            </h3>
-            {reviewError && (
-              <div className="review-error-message">
-                {reviewError}
-              </div>
-            )}
-            <form onSubmit={handleReviewSubmit} className="review-form">
-              <input
-                type="text"
-                name="name"
-                placeholder="Your Name"
-                value={reviewForm.name}
-                onChange={handleReviewChange}
-                required
-              />
-              <select
-                name="rating"
-                value={reviewForm.rating}
-                onChange={handleReviewChange}
-                required
-              >
-                {[5, 4, 3, 2, 1].map((num) => (
-                  <option key={num} value={num}>
-                    {num} Star{num > 1 ? 's' : ''}
-                  </option>
-                ))}
-              </select>
-              <textarea
-                name="comment"
-                placeholder="Your Review"
-                value={reviewForm.comment}
-                onChange={handleReviewChange}
-                required
-                rows={3}
-              />
-              <motion.button
-                type="submit"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                Submit Review
-              </motion.button>
-            </form>
-          </div>
         </div>
       </motion.div>
       <Footer />

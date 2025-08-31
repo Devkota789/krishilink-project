@@ -296,28 +296,12 @@ const Products = () => {
           alt={product.productName}
           onError={handleImageError}
         />
-        {isNearby && product.distance && (
-          <div className="distance-badge">
-            📍{" "}
-            {typeof product.distance === "string" &&
-            product.distance.includes("Km")
-              ? product.distance
-              : `${product.distance} Km`}
-          </div>
-        )}
       </div>
       <div className="product-info">
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5em', marginBottom: '0.2em' }}>
           <span className={`status-badge ${product.isActive ? 'active' : 'inactive'}`}>{product.isActive ? 'Active' : 'Inactive'}</span>
           <h3 style={{ margin: 0 }}>{product.productName}</h3>
         </div>
-        {isNearby && product.distance && (
-          <div className="distance-info" style={{ color: "#388e3c", fontWeight: 600, marginBottom: 4 }}>
-            📍 {typeof product.distance === "string" && product.distance.includes("Km")
-              ? product.distance
-              : `${product.distance} Km`} away from you
-          </div>
-        )}
         <p className="price">
           ₹{product.rate} per {product.unit || "kg"}
         </p>
