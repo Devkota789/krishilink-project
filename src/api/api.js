@@ -239,6 +239,47 @@ export const orderAPI = {
   deleteOrder: (orderId) => api.delete(`/api/Order/deleteOrder/${orderId}`),
 };
 
+// Review API endpoints
+export const reviewAPI = {
+  getProductReviews: async (productId) => {
+    try {
+      const response = await api.get(`/api/Review/getProductReviews/${productId}`);
+      return handleApiResponse(response);
+    } catch (err) {
+      if (err.response && err.response.data) {
+        return handleApiResponse(err.response);
+      }
+      return { success: false, error: 'Network error', errorDetails: [] };
+    }
+  },
+  addReview: async (formData) => {
+    try {
+      const response = await api.post('/api/Review/AddReview', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return handleApiResponse(response);
+    } catch (err) {
+      if (err.response && err.response.data) {
+        return handleApiResponse(err.response);
+      }
+      return { success: false, error: 'Network error', errorDetails: [] };
+    }
+  },
+  deleteReview: async (reviewId) => {
+    try {
+      const response = await api.delete(`/api/Review/DeleteReview/${reviewId}`);
+      return handleApiResponse(response);
+    } catch (err) {
+      if (err.response && err.response.data) {
+        return handleApiResponse(err.response);
+      }
+      return { success: false, error: 'Network error', errorDetails: [] };
+    }
+  },
+};
+
 
 
 // User API endpoints
