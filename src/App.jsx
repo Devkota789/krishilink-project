@@ -9,7 +9,7 @@ import Contact from './pages/Contact';
 import WhyUs from './pages/WhyUs';
 import { AuthProvider } from './context/AuthContext';
 import ProductDetails from './pages/ProductDetails';
-import Dashboard from './DashBoard/DashBoard'; // Fixed import
+import Dashboard from './dashBoard/DashBoard'; // Fixed import
 import AdminPanel from './pages/AdminPanel';
 import AddProduct from './pages/AddProduct';
 import MyProducts from './pages/MyProducts';
